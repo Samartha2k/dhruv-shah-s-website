@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spline Background</title>
+    <style>
+        @font-face {
+            font-family: 'Lochley';
+            src: url('Lochley-Regular-BF666cd1d3063843.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            animation: fadeIn 1.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        #canvas3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .name-container {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .name-container h1 {
+            font-family: 'Lochley', sans-serif;
+            font-size: 15rem;
+            font-weight: 400;
+            color: white;
+            letter-spacing: 0.05em;
+            margin: 0;
+            line-height: 0.85;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateX(-100px) rotateX(-20deg);
+            animation: slideInRotate 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transition: transform 0.4s ease, color 0.4s ease, text-shadow 0.4s ease;
+            cursor: pointer;
+            transform-origin: left center;
+        }
+
+        .name-container h1:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .name-container h1:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .name-container h1:hover {
+            transform: translateX(20px) scale(1.05);
+            color: #ffed00;
+            text-shadow: 0 0 20px rgba(255, 237, 0, 0.6),
+                         0 0 40px rgba(255, 215, 0, 0.4),
+                         0 0 60px rgba(255, 193, 7, 0.3);
+        }
+
+        @keyframes slideInRotate {
+            0% {
+                opacity: 0;
+                transform: translateX(-100px) rotateX(-20deg);
+            }
+            60% {
+                transform: translateX(10px) rotateX(2deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) rotateX(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .name-container {
+                bottom: 1.5rem;
+                left: 1.5rem;
+                right: 1.5rem;
+            }
+
+            .name-container h1 {
+                font-size: 5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .name-container {
+                bottom: 1rem;
+                left: 1rem;
+                right: 1rem;
+            }
+
+            .name-container h1 {
+                font-size: 7.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas3d"></canvas>
+    <div class="name-container">
+       <h1>DHRUV</h1>
+       <h1>SHAH</h1>
+    </div>
+
+    <script type="module">
+        import { Application } from 'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
+
+        const canvas = document.getElementById('canvas3d');
+        const app = new Application(canvas);
+        app.load('https://prod.spline.design/5Cs1WiiQRBmGcXGI/scene.splinecode');
+    </script>
+</body>
+</html>
