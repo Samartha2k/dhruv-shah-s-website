@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="eng">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spline Background</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
     <style>
         @font-face {
             font-family: 'Lochley';
@@ -19,16 +22,19 @@
             box-sizing: border-box;
         }
 
-        body, html {
+        html {
             width: 100%;
             height: 400vh;
             overflow-x: hidden;
         }
 
         body {
+            width: 100%;
+            height: 100%;
             opacity: 0;
             animation: fadeIn 1.4s ease-in forwards;
             overflow-y: auto;
+            overflow-x: hidden;
         }
 
         @keyframes fadeIn {
@@ -42,6 +48,7 @@
             width: 100%;
             height: 100vh;
             z-index: 1;
+            pointer-events: none;
         }
 
         .name-container {
@@ -60,50 +67,64 @@
             transform-style: preserve-3d;
         }
 
-        .name-container h1, .name-container p {
+        .name-container h1 {
             font-family: 'Lochley', -apple-system, sans-serif;
             font-size: 12rem;
             font-weight: 400;
             color: white;
             letter-spacing: .05em;
-            margin: 0;
             line-height: .85;
             white-space: nowrap;
             pointer-events: auto;
             will-change: transform;
             transform-style: preserve-3d;
-            position: relative;
             cursor: pointer;
+            backface-visibility: hidden;
         }
 
         .name-container p {
+            font-family: 'Work Sans', -apple-system, sans-serif;
             font-size: 2.5rem;
-            line-height: 1.4;
+            font-weight: 400;
+            font-style: italic;
+            color: #E0E7FF;
+            letter-spacing: .05em;
+            line-height: 1.2;
             white-space: normal;
             max-width: 100%;
             margin-top: 2rem;
-            color: #E0E7FF;
+            pointer-events: auto;
+            will-change: transform;
+            transform-style: preserve-3d;
+            cursor: default;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backface-visibility: hidden;
         }
 
-        .name-container h1 .char, .name-container p .word {
+        .char, .word {
             display: inline-block;
             white-space: pre;
-            position: relative;
-            will-change: transform, opacity, filter;
+            will-change: transform, opacity;
             transform-style: preserve-3d;
+            backface-visibility: hidden;
         }
 
-        .name-container h1 .char {
+        .char {
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .name-container h1 .char.hovered {
+        .char.hovered {
             color: #09D0EF;
             text-shadow: 0 0 30px rgba(9, 208, 239, 0.8), 0 0 60px rgba(9, 208, 239, 0.5);
             transform: translateZ(50px) scale(1.2);
         }
 
-        .name-container h1 .char::before, .name-container p .word::before {
+        .char::before, .word::before {
             content: attr(data-char);
             position: absolute;
             top: 0;
@@ -111,14 +132,15 @@
             color: rgba(147, 197, 253, 0.3);
             filter: blur(20px);
             transform: translateZ(-50px);
+            pointer-events: none;
         }
 
-        .name-container h1 .char.hovered::before, .name-container p .word.hovered::before {
+        .char.hovered::before {
             color: rgba(9, 208, 239, 0.6);
             filter: blur(30px);
         }
 
-        .name-container h1 .char::after, .name-container p .word::after {
+        .char::after, .word::after {
             content: attr(data-char);
             position: absolute;
             top: 0;
@@ -127,9 +149,10 @@
             filter: blur(40px);
             transform: translateZ(-100px);
             transition: all 0.3s ease;
+            pointer-events: none;
         }
 
-        .name-container h1 .char.hovered::after, .name-container p .word.hovered::after {
+        .char.hovered::after {
             color: rgba(9, 208, 239, 0.3);
             filter: blur(60px);
         }
@@ -174,164 +197,154 @@
 <body>
     <canvas id="canvas3d"></canvas>
     <div class="name-container">
-        <h1 id="name-line-1">DHRUV</h1>
-        <h1 id="name-line-2">SHAH</h1>
-        <h1 id="about-line-1" style="display:none;">ABOUT</h1>
-        <h1 id="about-line-2" style="display:none;">ME</h1>
-        <p id="writeup-line-1" style="display:none;">I am Dhruv Shah, a 14-year-old student at Delhi Public School, Vadodara, distinguished for my academic commitment and diverse talents. Serving as Vice-Captain of Equality House and an active member of the Xpressnow Journalists Club, I consistently exhibit leadership and articulate communication.</p>
-        <p id="writeup-line-2" style="display:none;">My athletic journey includes representing my school in Table Tennis at the Khel Mahakumbh, complemented by an enthusiasm for cricket and photography. An avid reader with a keen interest in English literature, I also enjoy light strategic gaming during leisure.</p>
-        <p id="writeup-line-3" style="display:none;">I strive for holistic excellence, harmonizing intellectual curiosity with extracurricular pursuits, and upholding perseverance and integrity. Through dedication and continuous learning, I aim to make meaningful contributions to my community.</p>
-        <p id="writeup-line-4" style="display:none;">I maintain a balanced approach to personal growth and academic achievement, always seeking opportunities to expand my horizons. My journey is defined by continuous improvement, meaningful connections, and a commitment to excellence in all endeavors.</p>
+        <h1 id="n1">DHRUV</h1>
+        <h1 id="n2">SHAH</h1>
+        <h1 id="a1" style="display:none">ABOUT</h1>
+        <h1 id="a2" style="display:none">ME</h1>
+        <p id="w1" style="display:none">I am Dhruv Shah, a 14-year-old student at Delhi Public School, Vadodara, distinguished for my academic commitment and diverse talents.</p>
+        <p id="w2" style="display:none">Serving as Vice-Captain of Equality House and an active member of the Xpressnow Journalists Club, I consistently exhibit leadership and articulate communication.</p>
+        <p id="w3" style="display:none">My athletic journey includes representing my school in Table Tennis at the Khel Mahakumbh, complemented by an enthusiasm for cricket and photography.</p>
+        <p id="w4" style="display:none">An avid reader with a keen interest in English literature, I also enjoy light strategic gaming during leisure.</p>
+        <p id="w5" style="display:none">I strive for holistic excellence, harmonizing intellectual curiosity with extracurricular pursuits, and upholding perseverance and integrity.</p>
+        <p id="w6" style="display:none">Through dedication and continuous learning, I aim to make meaningful contributions to my community while maintaining a balanced approach to personal growth and academic achievement.</p>
     </div>
     <script type="module">
         import { Application } from 'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
-
         new Application(document.getElementById('canvas3d')).load('https://prod.spline.design/5Cs1WiiQRBmGcXGI/scene.splinecode');
 
         const texts = [
-            [document.getElementById('name-line-1'), document.getElementById('name-line-2')],
-            [document.getElementById('about-line-1'), document.getElementById('about-line-2')],
-            [document.getElementById('writeup-line-1')],
-            [document.getElementById('writeup-line-2')],
-            [document.getElementById('writeup-line-3')],
-            [document.getElementById('writeup-line-4')]
+            [n1, n2], [a1, a2], [w1], [w2], [w3], [w4], [w5], [w6]
         ];
-        let currentIndex = 0;
-        let isAnimating = false;
+        let idx = 0, anim = false;
 
-        function splitText(el) {
-            const text = el.textContent;
+        const split = (el) => {
+            const txt = el.textContent;
             el.innerHTML = '';
             const isP = el.tagName === 'P';
-
-            text.split(isP ? ' ' : '').forEach((part, i, arr) => {
-                const span = document.createElement('span');
-                span.className = isP ? 'word' : 'char';
-                span.textContent = isP ? part : (part === ' ' ? '\u00A0' : part);
-                span.setAttribute('data-char', span.textContent);
-                el.appendChild(span);
+            txt.split(isP ? ' ' : '').forEach((p, i, arr) => {
+                const s = document.createElement('span');
+                s.className = isP ? 'word' : 'char';
+                s.textContent = isP ? p : (p === ' ' ? '\u00A0' : p);
+                s.setAttribute('data-char', s.textContent);
+                el.appendChild(s);
                 if (isP && i < arr.length - 1) el.appendChild(document.createTextNode(' '));
             });
-        }
+        };
 
-        document.querySelectorAll('.name-container h1, .name-container p').forEach(splitText);
+        document.querySelectorAll('.name-container h1, .name-container p').forEach(split);
 
-        document.querySelectorAll('.name-container h1').forEach(h1 => {
+        const h1s = document.querySelectorAll('.name-container h1');
+        h1s.forEach(h1 => {
+            const chars = h1.querySelectorAll('.char');
+            const rect = h1.getBoundingClientRect();
+
             h1.addEventListener('mousemove', (e) => {
-                const chars = h1.querySelectorAll('.char');
-                const rect = h1.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-
-                chars.forEach(char => {
-                    const charRect = char.getBoundingClientRect();
-                    const distance = Math.abs(mouseX - (charRect.left - rect.left + charRect.width / 2));
-                    const maxDist = 200;
-
-                    if (distance < maxDist) {
-                        const prox = 1 - (distance / maxDist);
-                        char.classList.add('hovered');
-                        const scale = 1 + (prox * 0.2);
-                        const translateY = -prox * 20;
-                        const rotate = (mouseX > charRect.left - rect.left + charRect.width / 2 ? 1 : -1) * prox * 10;
-                        char.style.transform = `translateZ(${prox * 50}px) translateY(${translateY}px) scale(${scale}) rotateZ(${rotate}deg)`;
+                const mx = e.clientX - rect.left;
+                chars.forEach(c => {
+                    const cr = c.getBoundingClientRect();
+                    const d = Math.abs(mx - (cr.left - rect.left + cr.width / 2));
+                    if (d < 200) {
+                        const px = 1 - (d / 200);
+                        c.classList.add('hovered');
+                        c.style.transform = `translateZ(${px * 50}px) translateY(${-px * 20}px) scale(${1 + px * 0.2}) rotateZ(${(mx > cr.left - rect.left + cr.width / 2 ? 1 : -1) * px * 10}deg)`;
                     } else {
-                        char.classList.remove('hovered');
-                        char.style.transform = '';
+                        c.classList.remove('hovered');
+                        c.style.transform = '';
                     }
                 });
             });
 
             h1.addEventListener('mouseleave', () => {
-                h1.querySelectorAll('.char').forEach(char => {
-                    char.classList.remove('hovered');
-                    char.style.transform = '';
+                chars.forEach(c => {
+                    c.classList.remove('hovered');
+                    c.style.transform = '';
                 });
             });
         });
 
-        const easing = {
+        const ease = {
             expo: t => t === 1 ? 1 : 1 - Math.pow(2, -10 * t),
             elastic: t => {
-                const c4 = (2 * Math.PI) / 3;
-                return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+                const c = (2 * Math.PI) / 3;
+                return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c) + 1;
             }
         };
 
-        function animate(el, dur, onUpdate, ease) {
-            const start = performance.now();
-            function step(t) {
-                const prog = Math.min((t - start) / dur, 1);
-                onUpdate(ease(prog));
-                if (prog < 1) requestAnimationFrame(step);
-            }
+        const animate = (el, dur, fn, e) => {
+            const st = performance.now();
+            const step = (t) => {
+                const p = Math.min((t - st) / dur, 1);
+                fn(e(p));
+                if (p < 1) requestAnimationFrame(step);
+            };
             requestAnimationFrame(step);
-        }
+        };
 
-        function animateTransition(from, to) {
-            if (isAnimating) return;
-            isAnimating = true;
+        const transition = (from, to) => {
+            if (anim) return;
+            anim = true;
 
-            const fromItems = from.flatMap(el => Array.from(el.querySelectorAll('.char, .word')));
-            const toItems = to.flatMap(el => Array.from(el.querySelectorAll('.char, .word')));
+            const fItems = from.flatMap(el => [...el.querySelectorAll('.char, .word')]);
+            const tItems = to.flatMap(el => [...el.querySelectorAll('.char, .word')]);
 
-            fromItems.forEach((item, i) => {
-                const angle = (i / fromItems.length) * Math.PI * 2;
-                const [tx, ty, tz] = [Math.cos(angle) * 800, Math.sin(angle) * 800, -500 + Math.random() * 1000];
+            fItems.forEach((it, i) => {
+                const ang = (i / fItems.length) * Math.PI * 2;
+                const [tx, ty, tz] = [Math.cos(ang) * 800, Math.sin(ang) * 800, -500 + Math.random() * 1000];
                 const [rx, ry, rz] = [Math.random() * 720 - 360, Math.random() * 720 - 360, Math.random() * 720 - 360];
 
-                animate(item, 400, (p) => {
-                    item.style.transform = `translate3d(${tx * p}px, ${ty * p}px, ${tz * p}px) rotateX(${rx * p}deg) rotateY(${ry * p}deg) rotateZ(${rz * p}deg) scale(${1 - p * 0.5})`;
-                    item.style.opacity = 1 - p;
-                    item.style.filter = `blur(${p * 20}px) brightness(${1 + p * 2})`;
-                }, easing.expo);
+                animate(it, 400, (p) => {
+                    it.style.transform = `translate3d(${tx * p}px, ${ty * p}px, ${tz * p}px) rotateX(${rx * p}deg) rotateY(${ry * p}deg) rotateZ(${rz * p}deg) scale(${1 - p * 0.5})`;
+                    it.style.opacity = 1 - p;
+                    it.style.filter = `blur(${p * 20}px) brightness(${1 + p * 2})`;
+                }, ease.expo);
             });
 
             setTimeout(() => {
                 from.forEach(el => el.style.display = 'none');
                 to.forEach(el => el.style.display = 'block');
 
-                toItems.forEach((item, i) => {
-                    item.style.opacity = 0;
-                    item.style.transform = 'translateY(100px) translateZ(-200px) rotateX(-90deg) scale(0.5)';
-                    item.style.filter = 'blur(10px)';
+                tItems.forEach((it, i) => {
+                    it.style.opacity = 0;
+                    it.style.transform = 'translateY(100px) translateZ(-200px) rotateX(-90deg) scale(0.5)';
+                    it.style.filter = 'blur(10px)';
 
                     setTimeout(() => {
-                        animate(item, 600, (p) => {
-                            item.style.transform = `translateY(${100 * (1 - p)}px) translateZ(${-200 * (1 - p)}px) rotateX(${-90 * (1 - p)}deg) scale(${0.5 + p * 0.5})`;
-                            item.style.opacity = p;
-                            item.style.filter = `blur(${10 * (1 - p)}px)`;
-                        }, easing.elastic);
+                        animate(it, 600, (p) => {
+                            it.style.transform = `translateY(${100 * (1 - p)}px) translateZ(${-200 * (1 - p)}px) rotateX(${-90 * (1 - p)}deg) scale(${0.5 + p * 0.5})`;
+                            it.style.opacity = p;
+                            it.style.filter = `blur(${10 * (1 - p)}px)`;
+                        }, ease.elastic);
                     }, i * 30);
                 });
 
-                setTimeout(() => isAnimating = false, toItems.length * 30 + 600);
+                setTimeout(() => anim = false, tItems.length * 30 + 600);
             }, 400);
-        }
+        };
 
-        let lastScrollY = 0, ticking = false;
+        let lastY = 0, tick = false;
 
         window.addEventListener('scroll', () => {
-            lastScrollY = window.scrollY;
-            if (!ticking) {
+            lastY = window.scrollY;
+            if (!tick) {
                 requestAnimationFrame(() => {
-                    const newIndex = lastScrollY < 50 ? 0 : lastScrollY < 200 ? 1 : lastScrollY < 350 ? 2 : lastScrollY < 500 ? 3 : lastScrollY < 650 ? 4 : 5;
-                    if (newIndex !== currentIndex && !isAnimating) {
-                        animateTransition(texts[currentIndex], texts[newIndex]);
-                        currentIndex = newIndex;
+                    const newIdx = lastY < 50 ? 0 : lastY < 200 ? 1 : lastY < 350 ? 2 : lastY < 500 ? 3 : lastY < 650 ? 4 : lastY < 800 ? 5 : lastY < 950 ? 6 : 7;
+                    if (newIdx !== idx && !anim) {
+                        transition(texts[idx], texts[newIdx]);
+                        idx = newIdx;
                     }
-                    ticking = false;
+                    tick = false;
                 });
-                ticking = true;
+                tick = true;
             }
-        });
+        }, { passive: true });
 
-        const interval = setInterval(() => {
-            const viewer = document.querySelector('spline-viewer');
-            if (viewer?.shadowRoot) {
-                const logo = viewer.shadowRoot.querySelector('#logo');
-                if (logo) {
-                    logo.remove();
-                    clearInterval(interval);
+        const int = setInterval(() => {
+            const v = document.querySelector('spline-viewer');
+            if (v?.shadowRoot) {
+                const l = v.shadowRoot.querySelector('#logo');
+                if (l) {
+                    l.remove();
+                    clearInterval(int);
                 }
             }
         }, 500);
