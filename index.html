@@ -173,6 +173,29 @@
 </head>
 <body>
     <canvas id="canvas3d"></canvas>
+    <div class="name-container">
+        <h1 id="name-line-1">DHRUV</h1>
+        <h1 id="name-line-2">SHAH</h1>
+        <h1 id="about-line-1" style="display:none;">ABOUT</h1>
+        <h1 id="about-line-2" style="display:none;">ME</h1>
+        <p id="writeup-line-1" style="display:none;">I am Dhruv Shah, a 14-year-old student at Delhi Public School, Vadodara, distinguished for my academic commitment and diverse talents. Serving as Vice-Captain of Equality House and an active member of the Xpressnow Journalists Club, I consistently exhibit leadership and articulate communication.</p>
+        <p id="writeup-line-2" style="display:none;">My athletic journey includes representing my school in Table Tennis at the Khel Mahakumbh, complemented by an enthusiasm for cricket and photography. An avid reader with a keen interest in English literature, I also enjoy light strategic gaming during leisure.</p>
+        <p id="writeup-line-3" style="display:none;">I strive for holistic excellence, harmonizing intellectual curiosity with extracurricular pursuits, and upholding perseverance and integrity. Through dedication and continuous learning, I aim to make meaningful contributions to my community.</p>
+        <p id="writeup-line-4" style="display:none;">I maintain a balanced approach to personal growth and academic achievement, always seeking opportunities to expand my horizons. My journey is defined by continuous improvement, meaningful connections, and a commitment to excellence in all endeavors.</p>
+    </div>
+    <script type="module">
+        import { Application } from 'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
+
+        new Application(document.getElementById('canvas3d')).load('https://prod.spline.design/5Cs1WiiQRBmGcXGI/scene.splinecode');
+
+        const texts = [
+            [document.getElementById('name-line-1'), document.getElementById('name-line-2')],
+            [document.getElementById('about-line-1'), document.getElementById('about-line-2')],
+            [document.getElementById('writeup-line-1')],
+            [document.getElementById('writeup-line-2')],
+            [document.getElementById('writeup-line-3')],
+            [document.getElementById('writeup-line-4')]
+        ];
         let currentIndex = 0;
         let isAnimating = false;
 
