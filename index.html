@@ -1,353 +1,400 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spline Background</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
-    <style>
-        @font-face {
-            font-family: 'Lochley';
-            src: url('Lochley-Regular-BF666cd1d3063843.otf') format('opentype');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dhruv Shah - Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fg:#fff;
+  --glow:#09D0EF;
+  --accent:#FF6B35;
+  --text-light:#E8F1FF;
+  --left-pad:clamp(1rem,4vw,2rem);
+  --glass-bg:rgba(255,255,255,.12);
+  --glass-border:rgba(255,255,255,.25);
+}
+@font-face{font-family:Lochley;src:url('Lochley-Regular-BF666cd1d3063843.otf') format('opentype');font-weight:400;font-display:swap}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden}
+body{
+  color:var(--fg);
+  background:#000;
+  opacity:0;
+  animation:f .6s cubic-bezier(.4,0,.2,1) forwards
+}
+@keyframes f{to{opacity:1}}
+#canvas3d{position:fixed;inset:0;z-index:1;width:100%;height:100dvh}
+.container{
+  position:fixed;
+  top:50%;
+  left:var(--left-pad);
+  transform:translateY(-50%);
+  width:60vw;
+  max-width:1300px;
+  z-index:10;
+  pointer-events:none;
+  perspective:2000px
+}
+h1{
+  font:400 clamp(3.25rem,12vw,12rem)/.85 Lochley,sans-serif;
+  letter-spacing:.05em;
+  white-space:nowrap;
+  pointer-events:auto;
+  cursor:pointer;
+  position:relative;
+  margin:0;
+  text-shadow:0 0 40px rgba(9,208,239,.25);
+  transition:text-shadow .3s ease
+}
+h1:hover{text-shadow:0 0 60px rgba(9,208,239,.45)}
+h1.about{
+  margin-top:clamp(1rem,2vw,2rem);
+  font-size:clamp(2.5rem,8vw,9rem);
+  color:var(--text-light);
+  letter-spacing:.08em;
+  opacity:.95
+}
+p{
+  font:500 clamp(1.05rem,2.3vw,2.5rem)/1.55 'Work Sans',sans-serif;
+  color:var(--text-light);
+  pointer-events:auto;
+  background:var(--glass-bg);
+  border:1.5px solid var(--glass-border);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  padding:clamp(1rem,2.5vw,1.8rem);
+  border-radius:1.5rem;
+  position:relative;
+  box-shadow:0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.1);
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  max-width:900px
+}
+p:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 48px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.15);
+  border-color:rgba(255,255,255,.35)
+}
+p::before{
+  content:'';
+  position:absolute;
+  top:-1px;
+  left:20%;
+  width:40%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--glow),transparent);
+  opacity:.4
+}
+.char,.word{
+  display:inline-block;
+  white-space:pre;
+  will-change:transform;
+  transition:all .15s cubic-bezier(.34,1.56,.64,1)
+}
+.char.h{
+  color:var(--glow);
+  text-shadow:0 0 35px rgba(9,208,239,.9),0 0 70px rgba(9,208,239,.4);
+  transform:translateZ(60px) scale(1.18);
+  filter:brightness(1.3)
+}
+.scroll-indicator{
+  position:fixed;
+  bottom:2rem;
+  right:2rem;
+  z-index:20;
+  pointer-events:none;
+  opacity:.5;
+  animation:bounce 2s ease-in-out infinite;
+  transition:opacity .3s ease
+}
+.scroll-indicator.hide{opacity:0}
+.scroll-indicator svg{
+  width:24px;
+  height:24px;
+  stroke:var(--glow);
+  stroke-width:2;
+  fill:none;
+  filter:drop-shadow(0 0 8px rgba(9,208,239,.6))
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+.page-counter{
+  position:fixed;
+  top:2rem;
+  right:2rem;
+  z-index:20;
+  font:500 clamp(.85rem,1.2vw,1rem)/1 'Work Sans',sans-serif;
+  color:rgba(255,255,255,.5);
+  letter-spacing:.15em;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .4s ease;
+  text-shadow:0 0 20px rgba(9,208,239,.3)
+}
+.page-counter.show{opacity:1}
+.decorative-line{
+  position:fixed;
+  left:0;
+  width:100%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(9,208,239,.3) 50%,transparent);
+  z-index:5;
+  opacity:0;
+  transition:opacity .6s ease
+}
+.decorative-line.top{top:15%}
+.decorative-line.bottom{bottom:15%}
+.decorative-line.show{opacity:1}
+.corner-accent{
+  position:fixed;
+  width:60px;
+  height:60px;
+  border:1px solid rgba(9,208,239,.3);
+  z-index:5;
+  opacity:0;
+  transition:all .5s ease;
+  pointer-events:none
+}
+.corner-accent.tl{top:1.5rem;left:1.5rem;border-right:none;border-bottom:none}
+.corner-accent.br{bottom:1.5rem;right:1.5rem;border-left:none;border-top:none}
+.corner-accent.show{opacity:.6}
+.version-tag{
+  position:fixed;
+  bottom:2rem;
+  left:2rem;
+  z-index:20;
+  font:400 clamp(.75rem,1vw,.85rem)/1 'Work Sans',sans-serif;
+  color:rgba(255,255,255,.35);
+  letter-spacing:.1em;
+  pointer-events:none;
+  opacity:0;
+  animation:fadeInDelayed 1s ease forwards 1.5s
+}
+@keyframes fadeInDelayed{to{opacity:1}}
+.floating-dot{
+  position:fixed;
+  width:4px;
+  height:4px;
+  background:var(--glow);
+  border-radius:50%;
+  z-index:5;
+  opacity:0;
+  box-shadow:0 0 10px var(--glow);
+  animation:float 4s ease-in-out infinite
+}
+.floating-dot:nth-child(1){top:20%;right:15%;animation-delay:0s}
+.floating-dot:nth-child(2){top:60%;right:25%;animation-delay:1.5s}
+.floating-dot:nth-child(3){top:40%;right:8%;animation-delay:3s}
+@keyframes float{
+  0%,100%{transform:translateY(0);opacity:.3}
+  50%{transform:translateY(-20px);opacity:.7}
+}
+@media(max-width:900px){
+  .container{width:92vw;left:clamp(.75rem,4vw,1rem)}
+  h1{font-size:clamp(2.75rem,13vw,7.5rem)}
+  h1.about{font-size:clamp(2rem,9vw,5rem)}
+  p{font-size:clamp(1.05rem,4vw,1.5rem);line-height:1.6}
+  .scroll-indicator,.page-counter,.corner-accent,.version-tag,.floating-dot,.decorative-line{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    transition-duration:.01ms!important
+  }
+}
+</style>
+</head><body>
+<canvas id="canvas3d"></canvas>
+<div class="container">
+  <h1 id="n1">DHRUV</h1>
+  <h1 id="n2">SHAH</h1>
+  <p id="t1" hidden></p>
+  <h1 id="a1" class="about" hidden>ABOUT</h1>
+  <h1 id="a2" class="about" hidden>ME</h1>
+</div>
+<div class="scroll-indicator" id="scroll">
+  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+</div>
+<div class="page-counter" id="counter">01 / 08</div>
+<div class="decorative-line top"></div>
+<div class="decorative-line bottom"></div>
+<div class="corner-accent tl"></div>
+<div class="corner-accent br"></div>
+<div class="version-tag">V.2025</div>
+<div class="floating-dot"></div>
+<div class="floating-dot"></div>
+<div class="floating-dot"></div>
+<script type="module">
+import{Application as A}from'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
+new A(document.getElementById('canvas3d')).load('https://prod.spline.design/5Cs1WiiQRBmGcXGI/scene.splinecode');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+const $=e=>document.getElementById(e),G=[['n1','n2'],['t1','a1','a2']].map(a=>a.map($));
+const txt=[
+"I am Dhruv Shah, a 14-year-old student at Delhi Public School, Vadodara, distinguished for my academic commitment and diverse talents.",
+"Serving as Vice-Captain of Equality House and an active member of the Xpressnow Journalists Club, I consistently exhibit leadership and articulate communication.",
+"My athletic journey includes representing my school in Table Tennis at the Khel Mahakumbh, complemented by an enthusiasm for cricket and photography.",
+"An avid reader with a keen interest in English literature, I also enjoy light strategic gaming during leisure.",
+"I strive for holistic excellence, harmonizing intellectual curiosity with extracurricular pursuits, and upholding perseverance and integrity.",
+"Through dedication and continuous learning, I aim to make meaningful contributions to my community while maintaining a balanced approach to personal growth and academic achievement."
+];
 
-        html {
-            width: 100%;
-            height: 400vh;
-            overflow-x: hidden;
-        }
+setTimeout(()=>{
+  document.querySelectorAll('.decorative-line,.corner-accent').forEach(el=>el.classList.add('show'))
+},800);
 
-        body {
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            animation: fadeIn 1.4s ease-in forwards;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
+const updateCounter=()=>{
+  const total=i===1?(txt.length+2):2;
+  const current=i===1?(ti+2):i+1;
+  $('counter').textContent=`${String(current).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
+  $('counter').classList.toggle('show',i===1);
+  $('scroll').classList.toggle('hide',i===1&&ti===txt.length-1)
+};
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
+const tk=e=>{const p=e.tagName==='P',a=p?e.textContent.split(' '):[...e.textContent];e.textContent='';a.forEach((t,i)=>{const s=document.createElement('span');s.className=p?'word':'char';s.textContent=p?t:(t===' '?'\u00A0':t);e.appendChild(s);if(p&&i<a.length-1)e.appendChild(document.createTextNode(' '))})};
 
-        #canvas3d {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: 1;
-            pointer-events: none;
-        }
+const H1=document.querySelectorAll('h1'),cache=new WeakMap();
+H1.forEach(h=>{h.onmouseenter=()=>{const L=h.getBoundingClientRect().left,d=[...h.querySelectorAll('.char')].map(c=>{const r=c.getBoundingClientRect();return{el:c,cx:r.left-L+r.width/2}});cache.set(h,{L,d})};
+h.onmousemove=e=>{const k=cache.get(h);if(!k)return;const x=e.clientX-k.L;k.d.forEach(({el,cx})=>{const d=Math.abs(x-cx);d<200?(el.classList.add('h'),el.style.transform=`translateZ(${(1-d/200)*60}px) translateY(${-(1-d/200)*20}px) scale(${1+(1-d/200)*.18}) rotateZ(${(x>cx?1:-1)*(1-d/200)*10}deg)`):el.classList.remove('h')})};
+h.onmouseleave=()=>h.querySelectorAll('.char').forEach(c=>{c.classList.remove('h');c.style.transform=''})});
 
-        .name-container {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            left: 2rem;
-            width: 60%;
-            max-height: 80vh;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            pointer-events: none;
-            perspective: 2000px;
-            transform-style: preserve-3d;
-        }
+document.querySelectorAll('h1').forEach(tk);
 
-        .name-container h1 {
-            font-family: 'Lochley', -apple-system, sans-serif;
-            font-size: 12rem;
-            font-weight: 400;
-            color: white;
-            letter-spacing: .05em;
-            line-height: .85;
-            white-space: nowrap;
-            pointer-events: auto;
-            will-change: transform;
-            transform-style: preserve-3d;
-            cursor: pointer;
-            backface-visibility: hidden;
-        }
+const an=(d,u,e=t=>t)=>{const s=performance.now(),r=t=>{const p=Math.min((t-s)/d,1);u(e(p));p<1&&requestAnimationFrame(r)};requestAnimationFrame(r)};
+const ex=t=>t<.5?4*t*t*t:(t-1)*(2*t-2)*(2*t-2)+1;
+let i=0,b=0,ti=0;
 
-        .name-container p {
-            font-family: 'Work Sans', -apple-system, sans-serif;
-            font-size: 2.5rem;
-            font-weight: 400;
-            font-style: italic;
-            color: #E0E7FF;
-            letter-spacing: .05em;
-            line-height: 1.2;
-            white-space: normal;
-            max-width: 100%;
-            margin-top: 2rem;
-            pointer-events: auto;
-            will-change: transform;
-            transform-style: preserve-3d;
-            cursor: default;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 1.5rem;
-            border-radius: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backface-visibility: hidden;
-        }
+const updateText=(newIdx,dir)=>{
+  if(b)return;
+  b=1;
+  const p=$('t1'),W=[...p.querySelectorAll('.word')];
+  
+  W.forEach((w,k)=>setTimeout(()=>an(280,v=>{
+    w.style.transform=`translateY(${-dir*35*v}px) scale(${1-v*.1})`;
+    w.style.opacity=1-v;
+    w.style.filter=`blur(${v*10}px)`
+  },ex),k*12));
+  
+  setTimeout(()=>{
+    p.textContent=txt[newIdx];
+    tk(p);
+    const NW=[...p.querySelectorAll('.word')];
+    NW.forEach((w,k)=>{
+      w.style.opacity=0;
+      w.style.transform=`translateY(${dir*35}px) scale(.9)`;
+      w.style.filter='blur(10px)';
+      setTimeout(()=>an(350,v=>{
+        w.style.transform=`translateY(${dir*35*(1-v)}px) scale(${.9+v*.1})`;
+        w.style.opacity=v;
+        w.style.filter=`blur(${10*(1-v)}px)`
+      },ex),k*12)
+    });
+    setTimeout(()=>{b=0;ti=newIdx;updateCounter()},NW.length*12+370)
+  },W.length*12+300)
+};
 
-        .char, .word {
-            display: inline-block;
-            white-space: pre;
-            will-change: transform, opacity;
-            transform-style: preserve-3d;
-            backface-visibility: hidden;
-        }
+const go=n=>{
+  if(b||n===i||n<0||n>=G.length)return;b=1;
+  const f=G[i],t=G[n];
+  
+  if(i===1&&n===0){
+    const F=f.flatMap(e=>[...e.querySelectorAll('.char,.word')]);
+    F.forEach((e,k)=>{const a=k/F.length*Math.PI*2;an(220,v=>{e.style.transform=`translate3d(${Math.cos(a)*650*v}px,${Math.sin(a)*650*v}px,${(-450+Math.random()*900)*v}px) rotate3d(${Math.random()},${Math.random()},${Math.random()},${v*400}deg) scale(${1-v*.3})`;e.style.opacity=1-v},ex)});
+    setTimeout(()=>{
+      f.forEach(e=>e.hidden=1);t.forEach(e=>e.hidden=0);
+      const T=t.flatMap(e=>[...e.querySelectorAll('.char,.word')]);
+      T.forEach((e,j)=>setTimeout(()=>{e.style.opacity=0;e.style.transform='translateY(35px) scale(.9)';an(450,v=>{e.style.transform=`translateY(${35*(1-v)}px) scale(${.9+v*.1})`;e.style.opacity=v},ex)},j*18));
+      setTimeout(()=>{b=0;i=n;ti=0;updateCounter()},T.length*18+470)
+    },240)
+  }else if(i===0&&n===1){
+    const F=f.flatMap(e=>[...e.querySelectorAll('.char,.word')]);
+    F.forEach((e,k)=>{const a=k/F.length*Math.PI*2;an(220,v=>{e.style.transform=`translate3d(${Math.cos(a)*650*v}px,${Math.sin(a)*650*v}px,${(-450+Math.random()*900)*v}px) rotate3d(${Math.random()},${Math.random()},${Math.random()},${v*400}deg) scale(${1-v*.3})`;e.style.opacity=1-v},ex)});
+    setTimeout(()=>{
+      f.forEach(e=>e.hidden=1);t.forEach(e=>e.hidden=0);ti=0;$('t1').textContent=txt[0];tk($('t1'));
+      const T=t.flatMap(e=>[...e.querySelectorAll('.char,.word')]);
+      T.forEach((e,j)=>setTimeout(()=>{e.style.opacity=0;e.style.transform='translateY(35px) scale(.9)';an(450,v=>{e.style.transform=`translateY(${35*(1-v)}px) scale(${.9+v*.1})`;e.style.opacity=v},ex)},j*18));
+      setTimeout(()=>{b=0;i=n;updateCounter()},T.length*18+470)
+    },240)
+  }
+};
 
-        .char {
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+addEventListener('wheel',e=>{
+  e.preventDefault();
+  if(Math.abs(e.deltaY)>10){
+    const dir=e.deltaY>0?1:-1;
+    if(i===1){
+      const newTi=ti+dir;
+      if(newTi>=0&&newTi<txt.length){
+        updateText(newTi,dir)
+      }else if(newTi>=txt.length){
+        go(2)
+      }else if(newTi<0){
+        go(0)
+      }
+    }else{
+      go(i+dir)
+    }
+  }
+},{passive:false});
 
-        .char.hovered {
-            color: #09D0EF;
-            text-shadow: 0 0 30px rgba(9, 208, 239, 0.8), 0 0 60px rgba(9, 208, 239, 0.5);
-            transform: translateZ(50px) scale(1.2);
-        }
+let y=null;
+addEventListener('touchstart',e=>y=e.touches[0]?.clientY);
+addEventListener('touchmove',e=>{
+  if(y==null)return;
+  const d=e.touches[0].clientY-y;
+  if(Math.abs(d)>28){
+    e.preventDefault();
+    const dir=d<0?1:-1;
+    if(i===1){
+      const newTi=ti+dir;
+      if(newTi>=0&&newTi<txt.length){
+        updateText(newTi,dir)
+      }else if(newTi>=txt.length){
+        go(2)
+      }else if(newTi<0){
+        go(0)
+      }
+    }else{
+      go(i+dir)
+    }
+    y=null
+  }
+},{passive:false});
+addEventListener('touchend',()=>y=null);
 
-        .char::before, .word::before {
-            content: attr(data-char);
-            position: absolute;
-            top: 0;
-            left: 0;
-            color: rgba(147, 197, 253, 0.3);
-            filter: blur(20px);
-            transform: translateZ(-50px);
-            pointer-events: none;
-        }
-
-        .char.hovered::before {
-            color: rgba(9, 208, 239, 0.6);
-            filter: blur(30px);
-        }
-
-        .char::after, .word::after {
-            content: attr(data-char);
-            position: absolute;
-            top: 0;
-            left: 0;
-            color: rgba(255, 255, 255, 0.1);
-            filter: blur(40px);
-            transform: translateZ(-100px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-
-        .char.hovered::after {
-            color: rgba(9, 208, 239, 0.3);
-            filter: blur(60px);
-        }
-
-        @media (max-width: 768px) {
-            .name-container {
-                bottom: 1.5rem;
-                left: 1.5rem;
-            }
-            .name-container h1 {
-                font-size: 5rem;
-            }
-            .name-container p {
-                font-size: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .name-container {
-                top: 50%;
-                left: 1rem;
-                width: 100%;
-                max-height: 90vh;
-            }
-            .name-container h1 {
-                font-size: 7.5rem;
-            }
-            .name-container p {
-                font-size: 1.8rem;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: .01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: .01ms !important;
-            }
-        }
-    </style>
-</head>
-<body>
-    <canvas id="canvas3d"></canvas>
-    <div class="name-container">
-        <h1 id="n1">DHRUV</h1>
-        <h1 id="n2">SHAH</h1>
-        <h1 id="a1" style="display:none">ABOUT</h1>
-        <h1 id="a2" style="display:none">ME</h1>
-        <p id="w1" style="display:none">I am Dhruv Shah, a 14-year-old student at Delhi Public School, Vadodara, distinguished for my academic commitment and diverse talents.</p>
-        <p id="w2" style="display:none">Serving as Vice-Captain of Equality House and an active member of the Xpressnow Journalists Club, I consistently exhibit leadership and articulate communication.</p>
-        <p id="w3" style="display:none">My athletic journey includes representing my school in Table Tennis at the Khel Mahakumbh, complemented by an enthusiasm for cricket and photography.</p>
-        <p id="w4" style="display:none">An avid reader with a keen interest in English literature, I also enjoy light strategic gaming during leisure.</p>
-        <p id="w5" style="display:none">I strive for holistic excellence, harmonizing intellectual curiosity with extracurricular pursuits, and upholding perseverance and integrity.</p>
-        <p id="w6" style="display:none">Through dedication and continuous learning, I aim to make meaningful contributions to my community while maintaining a balanced approach to personal growth and academic achievement.</p>
-    </div>
-    <script type="module">
-        import { Application } from 'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
-        new Application(document.getElementById('canvas3d')).load('https://prod.spline.design/5Cs1WiiQRBmGcXGI/scene.splinecode');
-
-        const texts = [
-            [n1, n2], [a1, a2], [w1], [w2], [w3], [w4], [w5], [w6]
-        ];
-        let idx = 0, anim = false;
-
-        const split = (el) => {
-            const txt = el.textContent;
-            el.innerHTML = '';
-            const isP = el.tagName === 'P';
-            txt.split(isP ? ' ' : '').forEach((p, i, arr) => {
-                const s = document.createElement('span');
-                s.className = isP ? 'word' : 'char';
-                s.textContent = isP ? p : (p === ' ' ? '\u00A0' : p);
-                s.setAttribute('data-char', s.textContent);
-                el.appendChild(s);
-                if (isP && i < arr.length - 1) el.appendChild(document.createTextNode(' '));
-            });
-        };
-
-        document.querySelectorAll('.name-container h1, .name-container p').forEach(split);
-
-        const h1s = document.querySelectorAll('.name-container h1');
-        h1s.forEach(h1 => {
-            const chars = h1.querySelectorAll('.char');
-            const rect = h1.getBoundingClientRect();
-
-            h1.addEventListener('mousemove', (e) => {
-                const mx = e.clientX - rect.left;
-                chars.forEach(c => {
-                    const cr = c.getBoundingClientRect();
-                    const d = Math.abs(mx - (cr.left - rect.left + cr.width / 2));
-                    if (d < 200) {
-                        const px = 1 - (d / 200);
-                        c.classList.add('hovered');
-                        c.style.transform = `translateZ(${px * 50}px) translateY(${-px * 20}px) scale(${1 + px * 0.2}) rotateZ(${(mx > cr.left - rect.left + cr.width / 2 ? 1 : -1) * px * 10}deg)`;
-                    } else {
-                        c.classList.remove('hovered');
-                        c.style.transform = '';
-                    }
-                });
-            });
-
-            h1.addEventListener('mouseleave', () => {
-                chars.forEach(c => {
-                    c.classList.remove('hovered');
-                    c.style.transform = '';
-                });
-            });
-        });
-
-        const ease = {
-            expo: t => t === 1 ? 1 : 1 - Math.pow(2, -10 * t),
-            elastic: t => {
-                const c = (2 * Math.PI) / 3;
-                return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c) + 1;
-            }
-        };
-
-        const animate = (el, dur, fn, e) => {
-            const st = performance.now();
-            const step = (t) => {
-                const p = Math.min((t - st) / dur, 1);
-                fn(e(p));
-                if (p < 1) requestAnimationFrame(step);
-            };
-            requestAnimationFrame(step);
-        };
-
-        const transition = (from, to) => {
-            if (anim) return;
-            anim = true;
-
-            const fItems = from.flatMap(el => [...el.querySelectorAll('.char, .word')]);
-            const tItems = to.flatMap(el => [...el.querySelectorAll('.char, .word')]);
-
-            fItems.forEach((it, i) => {
-                const ang = (i / fItems.length) * Math.PI * 2;
-                const [tx, ty, tz] = [Math.cos(ang) * 800, Math.sin(ang) * 800, -500 + Math.random() * 1000];
-                const [rx, ry, rz] = [Math.random() * 720 - 360, Math.random() * 720 - 360, Math.random() * 720 - 360];
-
-                animate(it, 400, (p) => {
-                    it.style.transform = `translate3d(${tx * p}px, ${ty * p}px, ${tz * p}px) rotateX(${rx * p}deg) rotateY(${ry * p}deg) rotateZ(${rz * p}deg) scale(${1 - p * 0.5})`;
-                    it.style.opacity = 1 - p;
-                    it.style.filter = `blur(${p * 20}px) brightness(${1 + p * 2})`;
-                }, ease.expo);
-            });
-
-            setTimeout(() => {
-                from.forEach(el => el.style.display = 'none');
-                to.forEach(el => el.style.display = 'block');
-
-                tItems.forEach((it, i) => {
-                    it.style.opacity = 0;
-                    it.style.transform = 'translateY(100px) translateZ(-200px) rotateX(-90deg) scale(0.5)';
-                    it.style.filter = 'blur(10px)';
-
-                    setTimeout(() => {
-                        animate(it, 600, (p) => {
-                            it.style.transform = `translateY(${100 * (1 - p)}px) translateZ(${-200 * (1 - p)}px) rotateX(${-90 * (1 - p)}deg) scale(${0.5 + p * 0.5})`;
-                            it.style.opacity = p;
-                            it.style.filter = `blur(${10 * (1 - p)}px)`;
-                        }, ease.elastic);
-                    }, i * 30);
-                });
-
-                setTimeout(() => anim = false, tItems.length * 30 + 600);
-            }, 400);
-        };
-
-        let lastY = 0, tick = false;
-
-        window.addEventListener('scroll', () => {
-            lastY = window.scrollY;
-            if (!tick) {
-                requestAnimationFrame(() => {
-                    const newIdx = lastY < 50 ? 0 : lastY < 200 ? 1 : lastY < 350 ? 2 : lastY < 500 ? 3 : lastY < 650 ? 4 : lastY < 800 ? 5 : lastY < 950 ? 6 : 7;
-                    if (newIdx !== idx && !anim) {
-                        transition(texts[idx], texts[newIdx]);
-                        idx = newIdx;
-                    }
-                    tick = false;
-                });
-                tick = true;
-            }
-        }, { passive: true });
-
-        const int = setInterval(() => {
-            const v = document.querySelector('spline-viewer');
-            if (v?.shadowRoot) {
-                const l = v.shadowRoot.querySelector('#logo');
-                if (l) {
-                    l.remove();
-                    clearInterval(int);
-                }
-            }
-        }, 500);
-    </script>
-</body>
-</html>
+addEventListener('keydown',e=>{
+  if(b)return;
+  const k=e.key;
+  if(['ArrowDown','PageDown',' '].includes(k)){
+    e.preventDefault();
+    const dir=1;
+    if(i===1){
+      const newTi=ti+dir;
+      if(newTi<txt.length){
+        updateText(newTi,dir)
+      }else{
+        go(2)
+      }
+    }else{
+      go(i+dir)
+    }
+  }else if(['ArrowUp','PageUp'].includes(k)){
+    e.preventDefault();
+    const dir=-1;
+    if(i===1){
+      const newTi=ti+dir;
+      if(newTi>=0){
+        updateText(newTi,dir)
+      }else{
+        go(0)
+      }
+    }else{
+      go(i+dir)
+    }
+  }
+});
+updateCounter();
+go(0);
+</script>
+</body></html>
