@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spline Background</title>
+    <style>
+        @font-face {
+            font-family: 'Lochley';
+            src: url('Lochley-Regular-BF666cd1d3063843.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 400vh;
+            overflow-x: hidden;
+        }
+
+        body {
+            opacity: 0;
+            animation: fadeIn 1.4s ease-in forwards;
+            overflow-y: auto;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        #canvas3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        .name-container {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 2rem;
+            width: 60%;
+            max-height: 80vh;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            pointer-events: none;
+            perspective: 2000px;
+            transform-style: preserve-3d;
+        }
+
+        .name-container h1, .name-container p {
+            font-family: 'Lochley', -apple-system, sans-serif;
+            font-size: 12rem;
+            font-weight: 400;
+            color: white;
+            letter-spacing: .05em;
+            margin: 0;
+            line-height: .85;
+            white-space: nowrap;
+            pointer-events: auto;
+            will-change: transform;
+            transform-style: preserve-3d;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .name-container p {
+            font-size: 2.5rem;
+            line-height: 1.4;
+            white-space: normal;
+            max-width: 100%;
+            margin-top: 2rem;
+            color: #E0E7FF;
+        }
+
+        .name-container h1 .char, .name-container p .word {
+            display: inline-block;
+            white-space: pre;
+            position: relative;
+            will-change: transform, opacity, filter;
+            transform-style: preserve-3d;
+        }
+
+        .name-container h1 .char {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .name-container h1 .char.hovered {
+            color: #09D0EF;
+            text-shadow: 0 0 30px rgba(9, 208, 239, 0.8), 0 0 60px rgba(9, 208, 239, 0.5);
+            transform: translateZ(50px) scale(1.2);
+        }
+
+        .name-container h1 .char::before, .name-container p .word::before {
+            content: attr(data-char);
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: rgba(147, 197, 253, 0.3);
+            filter: blur(20px);
+            transform: translateZ(-50px);
+        }
+
+        .name-container h1 .char.hovered::before, .name-container p .word.hovered::before {
+            color: rgba(9, 208, 239, 0.6);
+            filter: blur(30px);
+        }
+
+        .name-container h1 .char::after, .name-container p .word::after {
+            content: attr(data-char);
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: rgba(255, 255, 255, 0.1);
+            filter: blur(40px);
+            transform: translateZ(-100px);
+            transition: all 0.3s ease;
+        }
+
+        .name-container h1 .char.hovered::after, .name-container p .word.hovered::after {
+            color: rgba(9, 208, 239, 0.3);
+            filter: blur(60px);
+        }
+
+        @media (max-width: 768px) {
+            .name-container {
+                bottom: 1.5rem;
+                left: 1.5rem;
+            }
+            .name-container h1 {
+                font-size: 5rem;
+            }
+            .name-container p {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .name-container {
+                top: 50%;
+                left: 1rem;
+                width: 100%;
+                max-height: 90vh;
+            }
+            .name-container h1 {
+                font-size: 7.5rem;
+            }
+            .name-container p {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas3d"></canvas>
+    <div class="name-container">
+        <h1 id="name-line-1">DHRUV</h1>
+        <h1 id="name-line-2">SHAH</h1>
+        <h1 id="about-line-1" style="display:none;">ABOUT</h1>
+        <h1 id="about-line-2" style="display:none;">ME</h1>
+        <p id="writeup-line-1" style="display:none;">I am Dhruv Shah, a 14-year-old student at Delhi Public School, Vadodara, distinguished for my academic commitment and diverse talents. Serving as Vice-Captain of Equality House and an active member of the Xpressnow Journalists Club, I consistently exhibit leadership and articulate communication.</p>
+        <p id="writeup-line-2" style="display:none;">My athletic journey includes representing my school in Table Tennis at the Khel Mahakumbh, complemented by an enthusiasm for cricket and photography. An avid reader with a keen interest in English literature, I also enjoy light strategic gaming during leisure.</p>
+        <p id="writeup-line-3" style="display:none;">I strive for holistic excellence, harmonizing intellectual curiosity with extracurricular pursuits, and upholding perseverance and integrity. Through dedication and continuous learning, I aim to make meaningful contributions to my community.</p>
+        <p id="writeup-line-4" style="display:none;">I maintain a balanced approach to personal growth and academic achievement, always seeking opportunities to expand my horizons. My journey is defined by continuous improvement, meaningful connections, and a commitment to excellence in all endeavors.</p>
+    </div>
+    <script type="module">
+        import { Application } from 'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
+
+        new Application(document.getElementById('canvas3d')).load('https://prod.spline.design/5Cs1WiiQRBmGcXGI/scene.splinecode');
+
+        const texts = [
+            [document.getElementById('name-line-1'), document.getElementById('name-line-2')],
+            [document.getElementById('about-line-1'), document.getElementById('about-line-2')],
+            [document.getElementById('writeup-line-1')],
+            [document.getElementById('writeup-line-2')],
+            [document.getElementById('writeup-line-3')],
+            [document.getElementById('writeup-line-4')]
+        ];
+        let currentIndex = 0;
+        let isAnimating = false;
+
+        function splitText(el) {
+            const text = el.textContent;
+            el.innerHTML = '';
+            const isP = el.tagName === 'P';
+
+            text.split(isP ? ' ' : '').forEach((part, i, arr) => {
+                const span = document.createElement('span');
+                span.className = isP ? 'word' : 'char';
+                span.textContent = isP ? part : (part === ' ' ? '\u00A0' : part);
+                span.setAttribute('data-char', span.textContent);
+                el.appendChild(span);
+                if (isP && i < arr.length - 1) el.appendChild(document.createTextNode(' '));
+            });
+        }
+
+        document.querySelectorAll('.name-container h1, .name-container p').forEach(splitText);
+
+        document.querySelectorAll('.name-container h1').forEach(h1 => {
+            h1.addEventListener('mousemove', (e) => {
+                const chars = h1.querySelectorAll('.char');
+                const rect = h1.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+
+                chars.forEach(char => {
+                    const charRect = char.getBoundingClientRect();
+                    const distance = Math.abs(mouseX - (charRect.left - rect.left + charRect.width / 2));
+                    const maxDist = 200;
+
+                    if (distance < maxDist) {
+                        const prox = 1 - (distance / maxDist);
+                        char.classList.add('hovered');
+                        const scale = 1 + (prox * 0.2);
+                        const translateY = -prox * 20;
+                        const rotate = (mouseX > charRect.left - rect.left + charRect.width / 2 ? 1 : -1) * prox * 10;
+                        char.style.transform = translateZ(${prox * 50}px) translateY(${translateY}px) scale(${scale}) rotateZ(${rotate}deg);
+                    } else {
+                        char.classList.remove('hovered');
+                        char.style.transform = '';
+                    }
+                });
+            });
+
+            h1.addEventListener('mouseleave', () => {
+                h1.querySelectorAll('.char').forEach(char => {
+                    char.classList.remove('hovered');
+                    char.style.transform = '';
+                });
+            });
+        });
+
+        const easing = {
+            expo: t => t === 1 ? 1 : 1 - Math.pow(2, -10 * t),
+            elastic: t => {
+                const c4 = (2 * Math.PI) / 3;
+                return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+            }
+        };
+
+        function animate(el, dur, onUpdate, ease) {
+            const start = performance.now();
+            function step(t) {
+                const prog = Math.min((t - start) / dur, 1);
+                onUpdate(ease(prog));
+                if (prog < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        function animateTransition(from, to) {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            const fromItems = from.flatMap(el => Array.from(el.querySelectorAll('.char, .word')));
+            const toItems = to.flatMap(el => Array.from(el.querySelectorAll('.char, .word')));
+
+            fromItems.forEach((item, i) => {
+                const angle = (i / fromItems.length) * Math.PI * 2;
+                const [tx, ty, tz] = [Math.cos(angle) * 800, Math.sin(angle) * 800, -500 + Math.random() * 1000];
+                const [rx, ry, rz] = [Math.random() * 720 - 360, Math.random() * 720 - 360, Math.random() * 720 - 360];
+
+                animate(item, 400, (p) => {
+                    item.style.transform = translate3d(${tx * p}px, ${ty * p}px, ${tz * p}px) rotateX(${rx * p}deg) rotateY(${ry * p}deg) rotateZ(${rz * p}deg) scale(${1 - p * 0.5});
+                    item.style.opacity = 1 - p;
+                    item.style.filter = blur(${p * 20}px) brightness(${1 + p * 2});
+                }, easing.expo);
+            });
+
+            setTimeout(() => {
+                from.forEach(el => el.style.display = 'none');
+                to.forEach(el => el.style.display = 'block');
+
+                toItems.forEach((item, i) => {
+                    item.style.opacity = 0;
+                    item.style.transform = 'translateY(100px) translateZ(-200px) rotateX(-90deg) scale(0.5)';
+                    item.style.filter = 'blur(10px)';
+
+                    setTimeout(() => {
+                        animate(item, 600, (p) => {
+                            item.style.transform = translateY(${100 * (1 - p)}px) translateZ(${-200 * (1 - p)}px) rotateX(${-90 * (1 - p)}deg) scale(${0.5 + p * 0.5});
+                            item.style.opacity = p;
+                            item.style.filter = blur(${10 * (1 - p)}px);
+                        }, easing.elastic);
+                    }, i * 30);
+                });
+
+                setTimeout(() => isAnimating = false, toItems.length * 30 + 600);
+            }, 400);
+        }
+
+        let lastScrollY = 0, ticking = false;
+
+        window.addEventListener('scroll', () => {
+            lastScrollY = window.scrollY;
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const newIndex = lastScrollY < 50 ? 0 : lastScrollY < 200 ? 1 : lastScrollY < 350 ? 2 : lastScrollY < 500 ? 3 : lastScrollY < 650 ? 4 : 5;
+                    if (newIndex !== currentIndex && !isAnimating) {
+                        animateTransition(texts[currentIndex], texts[newIndex]);
+                        currentIndex = newIndex;
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        const interval = setInterval(() => {
+            const viewer = document.querySelector('spline-viewer');
+            if (viewer?.shadowRoot) {
+                const logo = viewer.shadowRoot.querySelector('#logo');
+                if (logo) {
+                    logo.remove();
+                    clearInterval(interval);
+                }
+            }
+        }, 500);
+    </script>
+</body>
+</html>
