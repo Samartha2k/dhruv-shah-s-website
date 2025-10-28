@@ -233,7 +233,7 @@
                         const scale = 1 + (prox * 0.2);
                         const translateY = -prox * 20;
                         const rotate = (mouseX > charRect.left - rect.left + charRect.width / 2 ? 1 : -1) * prox * 10;
-                        char.style.transform = translateZ(${prox * 50}px) translateY(${translateY}px) scale(${scale}) rotateZ(${rotate}deg);
+                        char.style.transform = `translateZ(${prox * 50}px) translateY(${translateY}px) scale(${scale}) rotateZ(${rotate}deg)`;
                     } else {
                         char.classList.remove('hovered');
                         char.style.transform = '';
@@ -280,9 +280,9 @@
                 const [rx, ry, rz] = [Math.random() * 720 - 360, Math.random() * 720 - 360, Math.random() * 720 - 360];
 
                 animate(item, 400, (p) => {
-                    item.style.transform = translate3d(${tx * p}px, ${ty * p}px, ${tz * p}px) rotateX(${rx * p}deg) rotateY(${ry * p}deg) rotateZ(${rz * p}deg) scale(${1 - p * 0.5});
+                    item.style.transform = `translate3d(${tx * p}px, ${ty * p}px, ${tz * p}px) rotateX(${rx * p}deg) rotateY(${ry * p}deg) rotateZ(${rz * p}deg) scale(${1 - p * 0.5})`;
                     item.style.opacity = 1 - p;
-                    item.style.filter = blur(${p * 20}px) brightness(${1 + p * 2});
+                    item.style.filter = `blur(${p * 20}px) brightness(${1 + p * 2})`;
                 }, easing.expo);
             });
 
@@ -297,9 +297,9 @@
 
                     setTimeout(() => {
                         animate(item, 600, (p) => {
-                            item.style.transform = translateY(${100 * (1 - p)}px) translateZ(${-200 * (1 - p)}px) rotateX(${-90 * (1 - p)}deg) scale(${0.5 + p * 0.5});
+                            item.style.transform = `translateY(${100 * (1 - p)}px) translateZ(${-200 * (1 - p)}px) rotateX(${-90 * (1 - p)}deg) scale(${0.5 + p * 0.5})`;
                             item.style.opacity = p;
-                            item.style.filter = blur(${10 * (1 - p)}px);
+                            item.style.filter = `blur(${10 * (1 - p)}px)`;
                         }, easing.elastic);
                     }, i * 30);
                 });
