@@ -1,400 +1,569 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dhruv Shah - Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root{
-  --fg:#fff;
-  --glow:#09D0EF;
-  --accent:#FF6B35;
-  --text-light:#E8F1FF;
-  --left-pad:clamp(1rem,4vw,2rem);
-  --glass-bg:rgba(255,255,255,.12);
-  --glass-border:rgba(255,255,255,.25);
-}
-@font-face{font-family:Lochley;src:url('Lochley-Regular-BF666cd1d3063843.otf') format('opentype');font-weight:400;font-display:swap}
-*{box-sizing:border-box;margin:0}
-html,body{height:100%;overflow:hidden}
-body{
-  color:var(--fg);
-  background:#000;
-  opacity:0;
-  animation:f .6s cubic-bezier(.4,0,.2,1) forwards
-}
-@keyframes f{to{opacity:1}}
-#canvas3d{position:fixed;inset:0;z-index:1;width:100%;height:100dvh}
-.container{
-  position:fixed;
-  top:50%;
-  left:var(--left-pad);
-  transform:translateY(-50%);
-  width:60vw;
-  max-width:1300px;
-  z-index:10;
-  pointer-events:none;
-  perspective:2000px
-}
-h1{
-  font:400 clamp(3.25rem,12vw,12rem)/.85 Lochley,sans-serif;
-  letter-spacing:.05em;
-  white-space:nowrap;
-  pointer-events:auto;
-  cursor:pointer;
-  position:relative;
-  margin:0;
-  text-shadow:0 0 40px rgba(9,208,239,.25);
-  transition:text-shadow .3s ease
-}
-h1:hover{text-shadow:0 0 60px rgba(9,208,239,.45)}
-h1.about{
-  margin-top:clamp(1rem,2vw,2rem);
-  font-size:clamp(2.5rem,8vw,9rem);
-  color:var(--text-light);
-  letter-spacing:.08em;
-  opacity:.95
-}
-p{
-  font:500 clamp(1.05rem,2.3vw,2.5rem)/1.55 'Work Sans',sans-serif;
-  color:var(--text-light);
-  pointer-events:auto;
-  background:var(--glass-bg);
-  border:1.5px solid var(--glass-border);
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
-  padding:clamp(1rem,2.5vw,1.8rem);
-  border-radius:1.5rem;
-  position:relative;
-  box-shadow:0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.1);
-  transition:all .3s cubic-bezier(.4,0,.2,1);
-  max-width:900px
-}
-p:hover{
-  transform:translateY(-2px);
-  box-shadow:0 12px 48px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.15);
-  border-color:rgba(255,255,255,.35)
-}
-p::before{
-  content:'';
-  position:absolute;
-  top:-1px;
-  left:20%;
-  width:40%;
-  height:1px;
-  background:linear-gradient(90deg,transparent,var(--glow),transparent);
-  opacity:.4
-}
-.char,.word{
-  display:inline-block;
-  white-space:pre;
-  will-change:transform;
-  transition:all .15s cubic-bezier(.34,1.56,.64,1)
-}
-.char.h{
-  color:var(--glow);
-  text-shadow:0 0 35px rgba(9,208,239,.9),0 0 70px rgba(9,208,239,.4);
-  transform:translateZ(60px) scale(1.18);
-  filter:brightness(1.3)
-}
-.scroll-indicator{
-  position:fixed;
-  bottom:2rem;
-  right:2rem;
-  z-index:20;
-  pointer-events:none;
-  opacity:.5;
-  animation:bounce 2s ease-in-out infinite;
-  transition:opacity .3s ease
-}
-.scroll-indicator.hide{opacity:0}
-.scroll-indicator svg{
-  width:24px;
-  height:24px;
-  stroke:var(--glow);
-  stroke-width:2;
-  fill:none;
-  filter:drop-shadow(0 0 8px rgba(9,208,239,.6))
-}
-@keyframes bounce{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-10px)}
-}
-.page-counter{
-  position:fixed;
-  top:2rem;
-  right:2rem;
-  z-index:20;
-  font:500 clamp(.85rem,1.2vw,1rem)/1 'Work Sans',sans-serif;
-  color:rgba(255,255,255,.5);
-  letter-spacing:.15em;
-  pointer-events:none;
-  opacity:0;
-  transition:opacity .4s ease;
-  text-shadow:0 0 20px rgba(9,208,239,.3)
-}
-.page-counter.show{opacity:1}
-.decorative-line{
-  position:fixed;
-  left:0;
-  width:100%;
-  height:1px;
-  background:linear-gradient(90deg,transparent,rgba(9,208,239,.3) 50%,transparent);
-  z-index:5;
-  opacity:0;
-  transition:opacity .6s ease
-}
-.decorative-line.top{top:15%}
-.decorative-line.bottom{bottom:15%}
-.decorative-line.show{opacity:1}
-.corner-accent{
-  position:fixed;
-  width:60px;
-  height:60px;
-  border:1px solid rgba(9,208,239,.3);
-  z-index:5;
-  opacity:0;
-  transition:all .5s ease;
-  pointer-events:none
-}
-.corner-accent.tl{top:1.5rem;left:1.5rem;border-right:none;border-bottom:none}
-.corner-accent.br{bottom:1.5rem;right:1.5rem;border-left:none;border-top:none}
-.corner-accent.show{opacity:.6}
-.version-tag{
-  position:fixed;
-  bottom:2rem;
-  left:2rem;
-  z-index:20;
-  font:400 clamp(.75rem,1vw,.85rem)/1 'Work Sans',sans-serif;
-  color:rgba(255,255,255,.35);
-  letter-spacing:.1em;
-  pointer-events:none;
-  opacity:0;
-  animation:fadeInDelayed 1s ease forwards 1.5s
-}
-@keyframes fadeInDelayed{to{opacity:1}}
-.floating-dot{
-  position:fixed;
-  width:4px;
-  height:4px;
-  background:var(--glow);
-  border-radius:50%;
-  z-index:5;
-  opacity:0;
-  box-shadow:0 0 10px var(--glow);
-  animation:float 4s ease-in-out infinite
-}
-.floating-dot:nth-child(1){top:20%;right:15%;animation-delay:0s}
-.floating-dot:nth-child(2){top:60%;right:25%;animation-delay:1.5s}
-.floating-dot:nth-child(3){top:40%;right:8%;animation-delay:3s}
-@keyframes float{
-  0%,100%{transform:translateY(0);opacity:.3}
-  50%{transform:translateY(-20px);opacity:.7}
-}
-@media(max-width:900px){
-  .container{width:92vw;left:clamp(.75rem,4vw,1rem)}
-  h1{font-size:clamp(2.75rem,13vw,7.5rem)}
-  h1.about{font-size:clamp(2rem,9vw,5rem)}
-  p{font-size:clamp(1.05rem,4vw,1.5rem);line-height:1.6}
-  .scroll-indicator,.page-counter,.corner-accent,.version-tag,.floating-dot,.decorative-line{display:none}
-}
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{
-    animation-duration:.01ms!important;
-    transition-duration:.01ms!important
-  }
-}
-</style>
-</head><body>
-<canvas id="canvas3d"></canvas>
-<div class="container">
-  <h1 id="n1">DHRUV</h1>
-  <h1 id="n2">SHAH</h1>
-  <p id="t1" hidden></p>
-  <h1 id="a1" class="about" hidden>ABOUT</h1>
-  <h1 id="a2" class="about" hidden>ME</h1>
-</div>
-<div class="scroll-indicator" id="scroll">
-  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-</div>
-<div class="page-counter" id="counter">01 / 08</div>
-<div class="decorative-line top"></div>
-<div class="decorative-line bottom"></div>
-<div class="corner-accent tl"></div>
-<div class="corner-accent br"></div>
-<div class="version-tag">V.2025</div>
-<div class="floating-dot"></div>
-<div class="floating-dot"></div>
-<div class="floating-dot"></div>
-<script type="module">
-import{Application as A}from'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
-new A(document.getElementById('canvas3d')).load('https://prod.spline.design/5Cs1WiiQRBmGcXGI/scene.splinecode');
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dhruv Shah</title>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --fg:#fff;
+            --glow:#00F0FF;
+            --accent:#FF6B35;
+            --text:#E0F7FF;
+            --pad:clamp(1rem,4vw,2rem);
+            --glass:rgba(0,240,255,.15);
+            --border:rgba(0,240,255,.35)
+        }
+        @font-face{
+            font-family:Lochley;
+            src:url('Lochley-Regular-BF666cd1d3063843.otf') format('opentype');
+            font-display:swap
+        }
+        *{
+            box-sizing:border-box;
+            margin:0
+        }
+        html,body{
+            height:100%;
+            overflow:hidden
+        }
+        body{
+            color:var(--fg);
+            background:#000;
+            opacity:0;
+            animation:f .6s cubic-bezier(.4,0,.2,1) forwards
+        }
+        @keyframes f{
+            to{
+                opacity:1
+            }
+        }
+        #canvas3d{
+            position:fixed;
+            inset:0;
+            z-index:1;
+            width:100%;
+            height:100vh;
+            filter:contrast(1.3)brightness(0.6)saturate(0.4)hue-rotate(190deg)blur(0.5px);
+            -webkit-filter:contrast(1.3)brightness(0.6)saturate(0.4)hue-rotate(190deg)blur(0.5px);
+            opacity:0.85
+        }
+        .container{
+            position:fixed;
+            top:50%;
+            left:var(--pad);
+            transform:translateY(-50%);
+            width:60vw;
+            max-width:1300px;
+            z-index:10;
+            pointer-events:none;
+            perspective:2000px
+        }
+        h1{
+            font:400 clamp(3.25rem,12vw,12rem)/.85 Lochley,sans-serif;
+            letter-spacing:.05em;
+            white-space:nowrap;
+            pointer-events:auto;
+            cursor:pointer;
+            position:relative;
+            margin:0;
+            color:#00F0FF;
+            text-shadow:0 0 40px rgba(0,240,255,.6),0 0 80px rgba(0,240,255,.3);
+            transition:all .3s
+        }
+        h1:hover{
+            text-shadow:0 0 60px rgba(0,240,255,.9),0 0 100px rgba(0,240,255,.5)
+        }
+        h1.about{
+            margin-top:clamp(1rem,2vw,2rem);
+            font-size:clamp(2.5rem,8vw,9rem);
+            letter-spacing:.08em;
+            opacity:.95;
+            color:#00F0FF;
+            text-shadow:0 0 35px rgba(0,240,255,.5),0 0 70px rgba(0,240,255,.3)
+        }
+        p{
+            font:500 clamp(1.05rem,2.3vw,2.5rem)/1.55 'Work Sans',sans-serif;
+            color:var(--text);
+            pointer-events:auto;
+            background:var(--glass);
+            border:1.5px solid var(--border);
+            backdrop-filter:blur(20px)saturate(180%);
+            -webkit-backdrop-filter:blur(20px)saturate(180%);
+            padding:clamp(1rem,2.5vw,1.8rem);
+            border-radius:1.5rem;
+            position:relative;
+            box-shadow:0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.1);
+            transition:all .3s cubic-bezier(.4,0,.2,1);
+            max-width:900px
+        }
+        p:hover{
+            transform:translateY(-2px);
+            box-shadow:0 12px 48px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.15);
+            border-color:rgba(255,255,255,.35)
+        }
+        p::before{
+            content:'';
+            position:absolute;
+            top:-1px;
+            left:20%;
+            width:40%;
+            height:2px;
+            background:linear-gradient(90deg,transparent,#00F0FF,#FF6B35,transparent);
+            opacity:.6;
+            box-shadow:0 0 15px rgba(0,240,255,.5)
+        }
+        .char,.word{
+            display:inline-block;
+            white-space:pre;
+            will-change:transform;
+            transition:all .15s cubic-bezier(.34,1.56,.64,1)
+        }
+        .char.h{
+            background:linear-gradient(135deg,#00F0FF,#FF6B35);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text;
+            text-shadow:0 0 45px rgba(0,240,255,.9),0 0 80px rgba(255,107,53,.5);
+            transform:translateZ(60px)scale(1.18);
+            filter:brightness(1.4)drop-shadow(0 0 20px rgba(0,240,255,.8))
+        }
+        .logo{
+            position:fixed;
+            top:2.5rem;
+            left:2.5rem;
+            z-index:20;
+            font:900 clamp(2.5rem,4vw,3.5rem)/1 'Work Sans',sans-serif;
+            letter-spacing:-.08em;
+            background:linear-gradient(135deg,#00F0FF,#FF6B35);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text;
+            opacity:0;
+            animation:fL .8s ease forwards .3s;
+            cursor:pointer;
+            transition:all .3s ease;
+            filter:drop-shadow(0 2px 15px rgba(0,240,255,.5))
+        }
+        .logo:hover{
+            transform:scale(1.08);
+            filter:drop-shadow(0 4px 25px rgba(0,240,255,.8))
+        }
+        @keyframes fL{
+            to{
+                opacity:1
+            }
+        }
+        .role{
+            position:fixed;
+            bottom:4rem;
+            right:2.5rem;
+            z-index:20;
+            text-align:right;
+            opacity:0;
+            animation:fR .8s ease forwards .5s;
+            pointer-events:none
+        }
+        .role-main{
+            font:900 clamp(1.8rem,3.5vw,3rem)/1 'Work Sans',sans-serif;
+            letter-spacing:.05em;
+            background:linear-gradient(135deg,#00F0FF,#7B68EE);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text;
+            text-transform:uppercase;
+            display:block;
+            margin-bottom:.3rem
+        }
+        .role-sub{
+            font:500 clamp(.75rem,1.2vw,.95rem)/1 'Work Sans',sans-serif;
+            letter-spacing:.2em;
+            color:rgba(0,240,255,.7);
+            text-transform:uppercase
+        }
+        @keyframes fR{
+            to{
+                opacity:1
+            }
+        }
+        .scroll{
+            position:fixed;
+            bottom:2rem;
+            left:50%;
+            transform:translateX(-50%);
+            z-index:20;
+            pointer-events:none;
+            opacity:.5;
+            animation:b 2s ease-in-out infinite;
+            transition:opacity .3s
+        }
+        .scroll.hide{
+            opacity:0
+        }
+        .scroll svg{
+            width:24px;
+            height:24px;
+            stroke:#00F0FF;
+            stroke-width:2;
+            fill:none;
+            filter:drop-shadow(0 0 12px rgba(0,240,255,.8))
+        }
+        @keyframes b{
+            0%,100%{
+                transform:translateX(-50%)translateY(0)
+            }
+            50%{
+                transform:translateX(-50%)translateY(-10px)
+            }
+        }
+        .counter{
+            position:fixed;
+            bottom:2rem;
+            left:2rem;
+            z-index:20;
+            font:500 clamp(.85rem,1.2vw,1rem)/1 'Work Sans',sans-serif;
+            color:rgba(0,240,255,.8);
+            letter-spacing:.15em;
+            pointer-events:none;
+            opacity:0;
+            transition:opacity .4s;
+            text-shadow:0 0 25px rgba(0,240,255,.5)
+        }
+        .counter.show{
+            opacity:1
+        }
+        .contact-btn{
+            position:fixed;
+            top:50%;
+            right:2rem;
+            transform:translateY(-50%);
+            z-index:25;
+            width:60px;
+            height:60px;
+            background:rgba(0,240,255,.15);
+            border:2px solid #00F0FF;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+            transition:all .4s cubic-bezier(.4,0,.2,1);
+            backdrop-filter:blur(10px);
+            color:#00F0FF;
+            opacity:0;
+            animation:fL .8s ease forwards .6s
+        }
+        .contact-btn:hover{
+            transform:translateY(-50%)scale(1.1)rotate(90deg);
+            background:rgba(0,240,255,.25);
+            box-shadow:0 0 30px rgba(0,240,255,.5),inset 0 0 20px rgba(0,240,255,.2)
+        }
+        .contact-panel{
+            position:fixed;
+            top:50%;
+            right:-450px;
+            transform:translateY(-50%);
+            width:400px;
+            background:rgba(10,10,15,.95);
+            border:2px solid rgba(0,240,255,.3);
+            border-radius:2rem;
+            padding:2.5rem 2rem;
+            z-index:30;
+            backdrop-filter:blur(25px)saturate(180%);
+            box-shadow:0 20px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(0,240,255,.2);
+            transition:right .5s cubic-bezier(.4,0,.2,1)
+        }
+        .contact-panel.show{
+            right:2rem
+        }
+        .contact-close{
+            position:absolute;
+            top:1rem;
+            right:1.5rem;
+            font:700 2rem/1 'Work Sans',sans-serif;
+            color:rgba(255,255,255,.6);
+            cursor:pointer;
+            transition:all .3s
+        }
+        .contact-close:hover{
+            color:#00F0FF;
+            transform:rotate(90deg)
+        }
+        .contact-title{
+            font:900 2rem/1 'Work Sans',sans-serif;
+            letter-spacing:.15em;
+            background:linear-gradient(135deg,#00F0FF,#7B68EE);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text;
+            margin-bottom:0.5rem
+        }
+        .contact-desc{
+            font:400 .95rem/1.5 'Work Sans',sans-serif;
+            color:rgba(255,255,255,.6);
+            margin-bottom:2rem
+        }
+        .contact-links{
+            display:flex;
+            gap:1rem;
+            justify-content:center;
+            margin-bottom:2rem
+        }
+        .contact-icon{
+            width:56px;
+            height:56px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:rgba(0,240,255,.1);
+            border:2px solid rgba(0,240,255,.3);
+            border-radius:1rem;
+            color:#00F0FF;
+            transition:all .3s cubic-bezier(.4,0,.2,1);
+            text-decoration:none
+        }
+        .contact-icon:hover{
+            background:rgba(0,240,255,.2);
+            border-color:#00F0FF;
+            transform:translateY(-5px);
+            box-shadow:0 10px 25px rgba(0,240,255,.3)
+        }
+        .contact-copy{
+            width:100%;
+            padding:1rem;
+            background:linear-gradient(135deg,rgba(0,240,255,.2),rgba(123,104,238,.2));
+            border:2px solid #00F0FF;
+            border-radius:1rem;
+            font:700 .9rem/1 'Work Sans',sans-serif;
+            letter-spacing:.15em;
+            color:#00F0FF;
+            cursor:pointer;
+            transition:all .3s;
+            text-transform:uppercase
+        }
+        .contact-copy:hover{
+            background:linear-gradient(135deg,rgba(0,240,255,.3),rgba(123,104,238,.3));
+            transform:translateY(-2px);
+            box-shadow:0 8px 20px rgba(0,240,255,.4)
+        }
+        .grid{
+            position:fixed;
+            inset:0;
+            z-index:2;
+            opacity:.05;
+            pointer-events:none;
+            background-image:linear-gradient(rgba(0,240,255,.4)1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.4)1px,transparent 1px);
+            background-size:80px 80px;
+            animation:gM 15s linear infinite
+        }
+        @keyframes gM{
+            to{
+                transform:translate(80px,80px)
+            }
+        }
+        .ring{
+            position:fixed;
+            width:clamp(150px,25vw,400px);
+            height:clamp(150px,25vw,400px);
+            border:2px solid rgba(255,107,53,.15);
+            border-radius:50%;
+            z-index:2;
+            pointer-events:none;
+            animation:pR 3s ease-in-out infinite;
+            box-shadow:0 0 40px rgba(255,107,53,.3),inset 0 0 40px rgba(255,107,53,.2)
+        }
+        .ring.r1{
+            top:10%;
+            left:15%;
+            animation-delay:0s
+        }
+        @keyframes pR{
+            0%,100%{
+                transform:scale(1);
+                opacity:.3
+            }
+            50%{
+                transform:scale(1.1);
+                opacity:.6
+            }
+        }
+        @media(max-width:900px){
+            .container{
+                width:92vw;
+                left:clamp(.75rem,4vw,1rem)
+            }
+            h1{
+                font-size:clamp(2.75rem,13vw,7.5rem)
+            }
+            h1.about{
+                font-size:clamp(2rem,9vw,5rem)
+            }
+            p{
+                font-size:clamp(1.05rem,4vw,1.5rem);
+                line-height:1.6
+            }
+            .logo{
+                top:1.5rem;
+                left:1.5rem;
+                font-size:clamp(2rem,5vw,2.5rem)
+            }
+            .role{
+                bottom:3.5rem;
+                right:1.5rem
+            }
+            .role-main{
+                font-size:clamp(1.3rem,4vw,1.8rem)
+            }
+            .role-sub{
+                font-size:clamp(.65rem,1.1vw,.8rem)
+            }
+            .scroll,.counter,.grid,.ring{
+                display:none
+            }
+            .contact-btn{
+                right:1.5rem;
+                width:50px;
+                height:50px
+            }
+            .contact-panel{
+                width:90vw;
+                right:-100vw
+            }
+            .contact-panel.show{
+                right:5vw
+            }
+        }
+        @media(prefers-reduced-motion:reduce){
+            *,*::before,*::after{
+                animation-duration:.01ms!important;
+                transition-duration:.01ms!important
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas3d"></canvas>
+    <div class="grid"></div>
+    <div class="logo">DS</div>
+    <div class="ring r1"></div>
 
-const $=e=>document.getElementById(e),G=[['n1','n2'],['t1','a1','a2']].map(a=>a.map($));
-const txt=[
-"I am Dhruv Shah, a 14-year-old student at Delhi Public School, Vadodara, distinguished for my academic commitment and diverse talents.",
-"Serving as Vice-Captain of Equality House and an active member of the Xpressnow Journalists Club, I consistently exhibit leadership and articulate communication.",
-"My athletic journey includes representing my school in Table Tennis at the Khel Mahakumbh, complemented by an enthusiasm for cricket and photography.",
-"An avid reader with a keen interest in English literature, I also enjoy light strategic gaming during leisure.",
-"I strive for holistic excellence, harmonizing intellectual curiosity with extracurricular pursuits, and upholding perseverance and integrity.",
-"Through dedication and continuous learning, I aim to make meaningful contributions to my community while maintaining a balanced approach to personal growth and academic achievement."
-];
+    <div class="container">
+        <h1 id="n1">DHRUV</h1>
+        <h1 id="n2">SHAH</h1>
+        <p id="t1" hidden></p>
+        <h1 id="a1" class="about" hidden>ABOUT</h1>
+        <h1 id="a2" class="about" hidden>ME</h1>
+    </div>
 
-setTimeout(()=>{
-  document.querySelectorAll('.decorative-line,.corner-accent').forEach(el=>el.classList.add('show'))
-},800);
+    <div class="role">
+        <span class="role-main">STUDENT</span>
+        <span class="role-sub">CLASS 9 • DPS VADODARA</span>
+    </div>
 
-const updateCounter=()=>{
-  const total=i===1?(txt.length+2):2;
-  const current=i===1?(ti+2):i+1;
-  $('counter').textContent=`${String(current).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
-  $('counter').classList.toggle('show',i===1);
-  $('scroll').classList.toggle('hide',i===1&&ti===txt.length-1)
-};
+    <div class="scroll" id="scroll">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 5v14M5 12l7 7 7-7" />
+        </svg>
+    </div>
 
-const tk=e=>{const p=e.tagName==='P',a=p?e.textContent.split(' '):[...e.textContent];e.textContent='';a.forEach((t,i)=>{const s=document.createElement('span');s.className=p?'word':'char';s.textContent=p?t:(t===' '?'\u00A0':t);e.appendChild(s);if(p&&i<a.length-1)e.appendChild(document.createTextNode(' '))})};
+    <div class="contact-btn" id="contactBtn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+            <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+    </div>
 
-const H1=document.querySelectorAll('h1'),cache=new WeakMap();
-H1.forEach(h=>{h.onmouseenter=()=>{const L=h.getBoundingClientRect().left,d=[...h.querySelectorAll('.char')].map(c=>{const r=c.getBoundingClientRect();return{el:c,cx:r.left-L+r.width/2}});cache.set(h,{L,d})};
-h.onmousemove=e=>{const k=cache.get(h);if(!k)return;const x=e.clientX-k.L;k.d.forEach(({el,cx})=>{const d=Math.abs(x-cx);d<200?(el.classList.add('h'),el.style.transform=`translateZ(${(1-d/200)*60}px) translateY(${-(1-d/200)*20}px) scale(${1+(1-d/200)*.18}) rotateZ(${(x>cx?1:-1)*(1-d/200)*10}deg)`):el.classList.remove('h')})};
-h.onmouseleave=()=>h.querySelectorAll('.char').forEach(c=>{c.classList.remove('h');c.style.transform=''})});
+    <div class="contact-panel" id="contactPanel">
+        <div class="contact-close" id="contactClose">×</div>
+        <h2 class="contact-title">LET'S CONNECT</h2>
+        <p class="contact-desc">Reach out through any platform or grab my details instantly</p>
+        <div class="contact-links">
+            <a href="https://linkedin.com/in/dhruvshah" target="_blank" class="contact-icon" title="LinkedIn">
+                <svg viewBox="0 0 24 24" width="28" height="28">
+                    <path fill="currentColor" d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                </svg>
+            </a>
+            <a href="https://github.com/dhruvshah" target="_blank" class="contact-icon" title="GitHub">
+                <svg viewBox="0 0 24 24" width="28" height="28">
+                    <path fill="currentColor" d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+                </svg>
+            </a>
+            <a href="mailto:dhruv@example.com" class="contact-icon" title="Email">
+                <svg viewBox="0 0 24 24" width="28" height="28">
+                    <path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+            </a>
+            <a href="tel:+919876543210" class="contact-icon" title="Phone">
+                <svg viewBox="0 0 24 24" width="28" height="28">
+                    <path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                </svg>
+            </a>
+            <a href="https://instagram.com/dhruvshah" target="_blank" class="contact-icon" title="Instagram">
+                <svg viewBox="0 0 24 24" width="28" height="28">
+                    <path fill="currentColor" d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+                </svg>
+            </a>
+        </div>
+        <button class="contact-copy">COPY CONTACT CARD</button>
+    </div>
 
-document.querySelectorAll('h1').forEach(tk);
+    <div class="counter" id="counter">01/08</div>
 
-const an=(d,u,e=t=>t)=>{const s=performance.now(),r=t=>{const p=Math.min((t-s)/d,1);u(e(p));p<1&&requestAnimationFrame(r)};requestAnimationFrame(r)};
-const ex=t=>t<.5?4*t*t*t:(t-1)*(2*t-2)*(2*t-2)+1;
-let i=0,b=0,ti=0;
+    <script type="module">
+        import{Application as A}from'https://unpkg.com/@splinetool/runtime@latest/build/runtime.js';
+        new A(document.getElementById('canvas3d')).load('https://prod.spline.design/5Cs1WiiQRBmGcXGI/scene.splinecode');
+        const $=e=>document.getElementById(e),G=[['n1','n2'],['t1','a1','a2']].map(a=>a.map($));
+        const txt=["I'm Dhruv Shah, a 14-year-old student at Delhi Public School, Vadodara, passionate about academics, leadership, and sports.","As Vice-Captain of Equality House and a journalist for Xpressnow, I blend communication, learning, and creativity while striving for balanced excellence in all pursuits."];
+        setTimeout(()=>document.querySelectorAll('.line,.corner').forEach(e=>e.classList.add('show')),800);
+        const uC=()=>{const t=i===1?txt.length+2:2,c=i===1?ti+3:i+1;$('counter').textContent=`${String(c).padStart(2,'0')}/${String(t+1).padStart(2,'0')}`;$('counter').classList.toggle('show',i===1);$('scroll').classList.toggle('hide',i===1&&ti===txt.length-1)};
+        const tk=e=>{const p=e.tagName==='P',a=p?e.textContent.split(' '):[...e.textContent];e.textContent='';a.forEach((t,i)=>{const s=document.createElement('span');s.className=p?'word':'char';s.textContent=p?t:(t===' '?'\u00A0':t);e.appendChild(s);if(p&&i<a.length-1)e.appendChild(document.createTextNode(' '))})};
+        const H=document.querySelectorAll('h1'),C=new WeakMap();
+        H.forEach(h=>{h.onmouseenter=()=>{const L=h.getBoundingClientRect().left,d=[...h.querySelectorAll('.char')].map(c=>{const r=c.getBoundingClientRect();return{el:c,cx:r.left-L+r.width/2}});C.set(h,{L,d})};
+        h.onmousemove=e=>{const k=C.get(h);if(!k)return;const x=e.clientX-k.L;k.d.forEach(({el,cx})=>{const d=Math.abs(x-cx);d<200?(el.classList.add('h'),el.style.transform=`translateZ(${(1-d/200)*60}px)translateY(${-(1-d/200)*20}px)scale(${1+(1-d/200)*.18})rotateZ(${(x>cx?1:-1)*(1-d/200)*10}deg)`):el.classList.remove('h')})};
+        h.onmouseleave=()=>h.querySelectorAll('.char').forEach(c=>{c.classList.remove('h');c.style.transform=''})});
+        H.forEach(tk);
+        const an=(d,u,e=t=>t)=>{const s=performance.now(),r=t=>{const p=Math.min((t-s)/d,1);u(e(p));p<1&&requestAnimationFrame(r)};requestAnimationFrame(r)};
+        const ex=t=>t<.5?4*t*t*t:(t-1)*(2*t-2)*(2*t-2)+1;
+        let i=0,b=0,ti=0;
+        const uT=(n,d)=>{if(b)return;b=1;const p=$('t1'),W=[...p.querySelectorAll('.word')];W.forEach((w,k)=>setTimeout(()=>an(280,v=>{w.style.transform=`translateY(${-d*35*v}px)scale(${1-v*.1})`;w.style.opacity=1-v;w.style.filter=`blur(${v*10}px)`},ex),k*12));setTimeout(()=>{p.textContent=txt[n];tk(p);const N=[...p.querySelectorAll('.word')];N.forEach((w,k)=>{w.style.opacity=0;w.style.transform=`translateY(${d*35}px)scale(.9)`;w.style.filter='blur(10px)';setTimeout(()=>an(350,v=>{w.style.transform=`translateY(${d*35*(1-v)}px)scale(${.9+v*.1})`;w.style.opacity=v;w.style.filter=`blur(${10*(1-v)}px)`},ex),k*12)});setTimeout(()=>{b=0;ti=n;uC()},N.length*12+370)},W.length*12+300)};
+        const go=n=>{if(b||n===i||n<0||n>=G.length)return;b=1;const f=G[i],t=G[n];if(i===1&&n===0){const F=f.flatMap(e=>[...e.querySelectorAll('.char,.word')]);F.forEach((e,k)=>{const a=k/F.length*Math.PI*2;an(220,v=>{e.style.transform=`translate3d(${Math.cos(a)*650*v}px,${Math.sin(a)*650*v}px,${(-450+Math.random()*900)*v}px)rotate3d(${Math.random()},${Math.random()},${Math.random()},${v*400}deg)scale(${1-v*.3})`;e.style.opacity=1-v},ex)});setTimeout(()=>{f.forEach(e=>e.hidden=1);t.forEach(e=>e.hidden=0);const T=t.flatMap(e=>[...e.querySelectorAll('.char,.word')]);T.forEach((e,j)=>setTimeout(()=>{e.style.opacity=0;e.style.transform='translateY(35px)scale(.9)';an(450,v=>{e.style.transform=`translateY(${35*(1-v)}px)scale(${.9+v*.1})`;e.style.opacity=v},ex)},j*18));setTimeout(()=>{b=0;i=n;ti=0;uC()},T.length*18+470)},240)}else if(i===0&&n===1){const F=f.flatMap(e=>[...e.querySelectorAll('.char,.word')]);F.forEach((e,k)=>{const a=k/F.length*Math.PI*2;an(220,v=>{e.style.transform=`translate3d(${Math.cos(a)*650*v}px,${Math.sin(a)*650*v}px,${(-450+Math.random()*900)*v}px)rotate3d(${Math.random()},${Math.random()},${Math.random()},${v*400}deg)scale(${1-v*.3})`;e.style.opacity=1-v},ex)});setTimeout(()=>{f.forEach(e=>e.hidden=1);t.forEach(e=>e.hidden=0);ti=0;$('t1').textContent=txt[0];tk($('t1'));const T=t.flatMap(e=>[...e.querySelectorAll('.char,.word')]);T.forEach((e,j)=>setTimeout(()=>{e.style.opacity=0;e.style.transform='translateY(35px)scale(.9)';an(450,v=>{e.style.transform=`translateY(${35*(1-v)}px)scale(${.9+v*.1})`;e.style.opacity=v},ex)},j*18));setTimeout(()=>{b=0;i=n;uC()},T.length*18+470)},240)}};
+        addEventListener('wheel',e=>{e.preventDefault();if(Math.abs(e.deltaY)>10){const d=e.deltaY>0?1:-1;if(i===1){const n=ti+d;if(n>=0&&n<txt.length)uT(n,d);else if(n>=txt.length)go(2);else if(n<0)go(0)}else go(i+d)}},{passive:!1});
+        let y=null;
+        addEventListener('touchstart',e=>y=e.touches[0]?.clientY);
+        addEventListener('touchmove',e=>{if(y==null)return;const d=e.touches[0].clientY-y;if(Math.abs(d)>28){e.preventDefault();const r=d<0?1:-1;if(i===1){const n=ti+r;if(n>=0&&n<txt.length)uT(n,r);else if(n>=txt.length)go(2);else if(n<0)go(0)}else go(i+r);y=null}},{passive:!1});
+        addEventListener('touchend',()=>y=null);
+        addEventListener('keydown',e=>{if(b)return;const k=e.key;if(['ArrowDown','PageDown',' '].includes(k)){e.preventDefault();const d=1;if(i===1){const n=ti+d;if(n<txt.length)uT(n,d);else go(2)}else go(i+d)}else if(['ArrowUp','PageUp'].includes(k)){e.preventDefault();const d=-1;if(i===1){const n=ti+d;if(n>=0)uT(n,d);else go(0)}else go(i+d)}});
+        uC();go(0);
 
-const updateText=(newIdx,dir)=>{
-  if(b)return;
-  b=1;
-  const p=$('t1'),W=[...p.querySelectorAll('.word')];
-  
-  W.forEach((w,k)=>setTimeout(()=>an(280,v=>{
-    w.style.transform=`translateY(${-dir*35*v}px) scale(${1-v*.1})`;
-    w.style.opacity=1-v;
-    w.style.filter=`blur(${v*10}px)`
-  },ex),k*12));
-  
-  setTimeout(()=>{
-    p.textContent=txt[newIdx];
-    tk(p);
-    const NW=[...p.querySelectorAll('.word')];
-    NW.forEach((w,k)=>{
-      w.style.opacity=0;
-      w.style.transform=`translateY(${dir*35}px) scale(.9)`;
-      w.style.filter='blur(10px)';
-      setTimeout(()=>an(350,v=>{
-        w.style.transform=`translateY(${dir*35*(1-v)}px) scale(${.9+v*.1})`;
-        w.style.opacity=v;
-        w.style.filter=`blur(${10*(1-v)}px)`
-      },ex),k*12)
-    });
-    setTimeout(()=>{b=0;ti=newIdx;updateCounter()},NW.length*12+370)
-  },W.length*12+300)
-};
+        const contactBtn=document.getElementById('contactBtn');
+        const contactPanel=document.getElementById('contactPanel');
+        const contactClose=document.getElementById('contactClose');
+        const contactCopy=document.querySelector('.contact-copy');
 
-const go=n=>{
-  if(b||n===i||n<0||n>=G.length)return;b=1;
-  const f=G[i],t=G[n];
-  
-  if(i===1&&n===0){
-    const F=f.flatMap(e=>[...e.querySelectorAll('.char,.word')]);
-    F.forEach((e,k)=>{const a=k/F.length*Math.PI*2;an(220,v=>{e.style.transform=`translate3d(${Math.cos(a)*650*v}px,${Math.sin(a)*650*v}px,${(-450+Math.random()*900)*v}px) rotate3d(${Math.random()},${Math.random()},${Math.random()},${v*400}deg) scale(${1-v*.3})`;e.style.opacity=1-v},ex)});
-    setTimeout(()=>{
-      f.forEach(e=>e.hidden=1);t.forEach(e=>e.hidden=0);
-      const T=t.flatMap(e=>[...e.querySelectorAll('.char,.word')]);
-      T.forEach((e,j)=>setTimeout(()=>{e.style.opacity=0;e.style.transform='translateY(35px) scale(.9)';an(450,v=>{e.style.transform=`translateY(${35*(1-v)}px) scale(${.9+v*.1})`;e.style.opacity=v},ex)},j*18));
-      setTimeout(()=>{b=0;i=n;ti=0;updateCounter()},T.length*18+470)
-    },240)
-  }else if(i===0&&n===1){
-    const F=f.flatMap(e=>[...e.querySelectorAll('.char,.word')]);
-    F.forEach((e,k)=>{const a=k/F.length*Math.PI*2;an(220,v=>{e.style.transform=`translate3d(${Math.cos(a)*650*v}px,${Math.sin(a)*650*v}px,${(-450+Math.random()*900)*v}px) rotate3d(${Math.random()},${Math.random()},${Math.random()},${v*400}deg) scale(${1-v*.3})`;e.style.opacity=1-v},ex)});
-    setTimeout(()=>{
-      f.forEach(e=>e.hidden=1);t.forEach(e=>e.hidden=0);ti=0;$('t1').textContent=txt[0];tk($('t1'));
-      const T=t.flatMap(e=>[...e.querySelectorAll('.char,.word')]);
-      T.forEach((e,j)=>setTimeout(()=>{e.style.opacity=0;e.style.transform='translateY(35px) scale(.9)';an(450,v=>{e.style.transform=`translateY(${35*(1-v)}px) scale(${.9+v*.1})`;e.style.opacity=v},ex)},j*18));
-      setTimeout(()=>{b=0;i=n;updateCounter()},T.length*18+470)
-    },240)
-  }
-};
+        contactBtn.addEventListener('click',()=>{
+            contactPanel.classList.add('show');
+        });
 
-addEventListener('wheel',e=>{
-  e.preventDefault();
-  if(Math.abs(e.deltaY)>10){
-    const dir=e.deltaY>0?1:-1;
-    if(i===1){
-      const newTi=ti+dir;
-      if(newTi>=0&&newTi<txt.length){
-        updateText(newTi,dir)
-      }else if(newTi>=txt.length){
-        go(2)
-      }else if(newTi<0){
-        go(0)
-      }
-    }else{
-      go(i+dir)
-    }
-  }
-},{passive:false});
+        contactClose.addEventListener('click',()=>{
+            contactPanel.classList.remove('show');
+        });
 
-let y=null;
-addEventListener('touchstart',e=>y=e.touches[0]?.clientY);
-addEventListener('touchmove',e=>{
-  if(y==null)return;
-  const d=e.touches[0].clientY-y;
-  if(Math.abs(d)>28){
-    e.preventDefault();
-    const dir=d<0?1:-1;
-    if(i===1){
-      const newTi=ti+dir;
-      if(newTi>=0&&newTi<txt.length){
-        updateText(newTi,dir)
-      }else if(newTi>=txt.length){
-        go(2)
-      }else if(newTi<0){
-        go(0)
-      }
-    }else{
-      go(i+dir)
-    }
-    y=null
-  }
-},{passive:false});
-addEventListener('touchend',()=>y=null);
-
-addEventListener('keydown',e=>{
-  if(b)return;
-  const k=e.key;
-  if(['ArrowDown','PageDown',' '].includes(k)){
-    e.preventDefault();
-    const dir=1;
-    if(i===1){
-      const newTi=ti+dir;
-      if(newTi<txt.length){
-        updateText(newTi,dir)
-      }else{
-        go(2)
-      }
-    }else{
-      go(i+dir)
-    }
-  }else if(['ArrowUp','PageUp'].includes(k)){
-    e.preventDefault();
-    const dir=-1;
-    if(i===1){
-      const newTi=ti+dir;
-      if(newTi>=0){
-        updateText(newTi,dir)
-      }else{
-        go(0)
-      }
-    }else{
-      go(i+dir)
-    }
-  }
-});
-updateCounter();
-go(0);
-</script>
-</body></html>
+        contactCopy.addEventListener('click',()=>{
+            const vcard=`BEGIN:VCARD
+VERSION:3.0
+FN:Dhruv Shah
+TEL:+919876543210
+EMAIL:dhruv@example.com
+URL:https://linkedin.com/in/dhruvshah
+END:VCARD`;
+            navigator.clipboard.writeText(vcard).then(()=>{
+                contactCopy.textContent='COPIED!';
+                setTimeout(()=>{
+                    contactCopy.textContent='COPY CONTACT CARD';
+                },2000);
+            });
+        });
+    </script>
+</body>
+</html>
