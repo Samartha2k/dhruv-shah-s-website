@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
     <title>Dhruv Shah</title>
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
@@ -26,7 +29,10 @@
         }
         html,body{
             height:100%;
-            overflow:hidden
+            overflow:hidden;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            text-rendering:optimizeLegibility
         }
         body{
             color:var(--fg);
@@ -239,25 +245,57 @@
             right:2rem;
             transform:translateY(-50%);
             z-index:25;
-            width:60px;
-            height:60px;
-            background:rgba(0,240,255,.15);
+            padding:1rem 1.5rem;
+            background:linear-gradient(135deg,rgba(0,240,255,.2),rgba(123,104,238,.15));
             border:2px solid #00F0FF;
-            border-radius:50%;
+            border-radius:2rem;
+            display:flex;
+            align-items:center;
+            gap:0.8rem;
+            cursor:pointer;
+            transition:all .4s cubic-bezier(.4,0,.2,1);
+            backdrop-filter:blur(15px)saturate(180%);
+            -webkit-backdrop-filter:blur(15px)saturate(180%);
+            color:#00F0FF;
+            opacity:0;
+            animation:fL .8s ease forwards .6s,pC 2s ease-in-out infinite
+        }
+        @keyframes pC{
+            0%,100%{
+                box-shadow:0 0 20px rgba(0,240,255,.4),inset 0 0 15px rgba(0,240,255,.1)
+            }
+            50%{
+                box-shadow:0 0 35px rgba(0,240,255,.7),inset 0 0 25px rgba(0,240,255,.2)
+            }
+        }
+        .contact-label{
+            font:700 .95rem/1 'Work Sans',sans-serif;
+            letter-spacing:.15em;
+            text-transform:uppercase;
+            white-space:nowrap;
+            pointer-events:none
+        }
+        .contact-icon-wrapper{
+            width:32px;
+            height:32px;
             display:flex;
             align-items:center;
             justify-content:center;
-            cursor:pointer;
-            transition:all .4s cubic-bezier(.4,0,.2,1);
-            backdrop-filter:blur(10px);
-            color:#00F0FF;
-            opacity:0;
-            animation:fL .8s ease forwards .6s
+            background:rgba(0,240,255,.2);
+            border-radius:50%;
+            transition:all .3s;
+            pointer-events:none
         }
         .contact-btn:hover{
-            transform:translateY(-50%)scale(1.1)rotate(90deg);
-            background:rgba(0,240,255,.25);
-            box-shadow:0 0 30px rgba(0,240,255,.5),inset 0 0 20px rgba(0,240,255,.2)
+            transform:translateY(-50%)translateX(-5px)scale(1.05);
+            background:linear-gradient(135deg,rgba(0,240,255,.3),rgba(123,104,238,.25));
+            border-color:#7B68EE;
+            animation:none;
+            box-shadow:0 0 40px rgba(0,240,255,.8),inset 0 0 30px rgba(0,240,255,.2)
+        }
+        .contact-btn:hover .contact-icon-wrapper{
+            background:rgba(255,107,53,.3);
+            transform:rotate(180deg)
         }
         .contact-panel{
             position:fixed;
@@ -271,8 +309,10 @@
             padding:2.5rem 2rem;
             z-index:30;
             backdrop-filter:blur(25px)saturate(180%);
+            -webkit-backdrop-filter:blur(25px)saturate(180%);
             box-shadow:0 20px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(0,240,255,.2);
-            transition:right .5s cubic-bezier(.4,0,.2,1)
+            transition:right .5s cubic-bezier(.4,0,.2,1);
+            -webkit-overflow-scrolling:touch
         }
         .contact-panel.show{
             right:2rem
@@ -330,6 +370,11 @@
             box-shadow:0 10px 25px rgba(0,240,255,.3)
         }
         .contact-copy{
+            display:flex;
+            flex-direction:column;
+            gap:0.8rem
+        }
+        .copy-btn{
             width:100%;
             padding:1rem;
             background:linear-gradient(135deg,rgba(0,240,255,.2),rgba(123,104,238,.2));
@@ -342,10 +387,14 @@
             transition:all .3s;
             text-transform:uppercase
         }
-        .contact-copy:hover{
+        .copy-btn:hover{
             background:linear-gradient(135deg,rgba(0,240,255,.3),rgba(123,104,238,.3));
             transform:translateY(-2px);
             box-shadow:0 8px 20px rgba(0,240,255,.4)
+        }
+        .copy-btn.copied{
+            background:linear-gradient(135deg,rgba(0,255,100,.2),rgba(0,240,255,.2));
+            border-color:#00FF64
         }
         .grid{
             position:fixed;
@@ -423,15 +472,156 @@
             }
             .contact-btn{
                 right:1.5rem;
-                width:50px;
-                height:50px
+                padding:0.8rem 1.2rem;
+                font-size:.85rem
+            }
+            .contact-icon-wrapper{
+                width:28px;
+                height:28px
             }
             .contact-panel{
                 width:90vw;
-                right:-100vw
+                right:-100vw;
+                max-height:85vh;
+                overflow-y:auto
             }
             .contact-panel.show{
                 right:5vw
+            }
+            .contact-links{
+                flex-wrap:wrap
+            }
+            .contact-icon{
+                width:50px;
+                height:50px
+            }
+        }
+        @media(min-width:901px)and(max-width:1400px){
+            .container{
+                width:70vw
+            }
+            h1{
+                font-size:clamp(4rem,10vw,10rem)
+            }
+            h1.about{
+                font-size:clamp(3rem,7vw,7rem)
+            }
+            p{
+                font-size:clamp(1.2rem,2vw,2rem)
+            }
+        }
+        @media(min-width:1401px){
+            .container{
+                width:60vw;
+                max-width:1400px
+            }
+        }
+        @media(orientation:landscape)and(max-height:600px){
+            .container{
+                top:45%;
+                width:85vw
+            }
+            h1{
+                font-size:clamp(2rem,8vw,5rem)
+            }
+            h1.about{
+                font-size:clamp(1.5rem,6vw,4rem)
+            }
+            p{
+                font-size:clamp(.9rem,2.5vw,1.2rem);
+                padding:clamp(.8rem,2vw,1.2rem)
+            }
+            .logo{
+                top:1rem;
+                left:1rem;
+                font-size:clamp(1.5rem,3vw,2rem)
+            }
+            .role{
+                bottom:1rem;
+                right:1rem
+            }
+            .role-main{
+                font-size:clamp(1rem,2.5vw,1.5rem)
+            }
+            .role-sub{
+                font-size:clamp(.6rem,1vw,.75rem)
+            }
+            .contact-btn{
+                padding:0.6rem 1rem;
+                right:1rem
+            }
+            .contact-label{
+                font-size:.75rem
+            }
+            .contact-icon-wrapper{
+                width:24px;
+                height:24px
+            }
+            .contact-panel{
+                width:85vw;
+                max-width:500px;
+                padding:1.5rem 1.5rem;
+                max-height:90vh;
+                overflow-y:auto
+            }
+            .contact-title{
+                font-size:1.5rem
+            }
+            .contact-desc{
+                font-size:.85rem;
+                margin-bottom:1rem
+            }
+            .contact-links{
+                margin-bottom:1rem;
+                gap:.8rem
+            }
+            .contact-icon{
+                width:48px;
+                height:48px
+            }
+            .copy-btn{
+                padding:.8rem;
+                font-size:.8rem
+            }
+        }
+        @media(min-width:768px)and(max-width:1024px){
+            .container{
+                width:75vw
+            }
+            h1{
+                font-size:clamp(3.5rem,11vw,8rem)
+            }
+            h1.about{
+                font-size:clamp(2.5rem,8vw,6rem)
+            }
+            p{
+                font-size:clamp(1.1rem,2.8vw,1.8rem)
+            }
+            .contact-panel{
+                width:70vw;
+                max-width:450px
+            }
+            .contact-panel.show{
+                right:3rem
+            }
+        }
+        @media(hover:none)and(pointer:coarse){
+            .contact-btn{
+                -webkit-tap-highlight-color:transparent;
+                touch-action:manipulation
+            }
+            .contact-icon,.copy-btn{
+                -webkit-tap-highlight-color:transparent;
+                touch-action:manipulation
+            }
+            .contact-btn:active{
+                transform:translateY(-50%)scale(0.95)
+            }
+            .contact-icon:active{
+                transform:translateY(-3px)scale(0.95)
+            }
+            .copy-btn:active{
+                transform:translateY(0)scale(0.95)
             }
         }
         @media(prefers-reduced-motion:reduce){
@@ -468,10 +658,15 @@
     </div>
 
     <div class="contact-btn" id="contactBtn">
-        <svg viewBox="0 0 24 24" width="24" height="24">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
-            <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+        <span class="contact-label">CONTACT ME</span>
+        <div class="contact-icon-wrapper">
+            <svg viewBox="0 0 24 24" width="20" height="20">
+                <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M21 10c0-4.97-4.03-9-9-9s-9 4.03-9 9c0 2.5 1.01 4.76 2.64 6.39L3 21l5.61-2.64C10.24 19.99 12.5 21 15 21"/>
+                <circle cx="8" cy="10" r="1" fill="currentColor"/>
+                <circle cx="12" cy="10" r="1" fill="currentColor"/>
+                <circle cx="16" cy="10" r="1" fill="currentColor"/>
+            </svg>
+        </div>
     </div>
 
     <div class="contact-panel" id="contactPanel">
@@ -479,33 +674,36 @@
         <h2 class="contact-title">LET'S CONNECT</h2>
         <p class="contact-desc">Reach out through any platform or grab my details instantly</p>
         <div class="contact-links">
-            <a href="https://linkedin.com/in/dhruvshah" target="_blank" class="contact-icon" title="LinkedIn">
+            <a href="https://www.linkedin.com/in/dhruv-shah2011" target="_blank" class="contact-icon" title="LinkedIn">
                 <svg viewBox="0 0 24 24" width="28" height="28">
                     <path fill="currentColor" d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
                 </svg>
             </a>
-            <a href="https://github.com/dhruvshah" target="_blank" class="contact-icon" title="GitHub">
+            <a href="https://unsplash.com/@dhruvshah25" target="_blank" class="contact-icon" title="Unsplash">
                 <svg viewBox="0 0 24 24" width="28" height="28">
-                    <path fill="currentColor" d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+                    <path fill="currentColor" d="M7.5 6.5V0h9v6.5h-9zm9 3.5H24V24H0V10h7.5v6.5h9V10z"/>
                 </svg>
             </a>
-            <a href="mailto:dhruv@example.com" class="contact-icon" title="Email">
+            <a href="https://snapchat.com/add/dshah2950" target="_blank" class="contact-icon" title="Snapchat">
+                <svg viewBox="0 0 24 24" width="28" height="28">
+                    <path fill="currentColor" d="M12.206.793c.99 0 4.347.276 5.93 3.821.529 1.193.403 3.219.299 4.847l-.003.06c-.012.18-.022.345-.029.496 0 .095.05.181.13.215.38.165.76.295 1.142.42.694.226 1.379.449 1.851.787.3.214.454.442.454.725 0 .725-.943 1.18-1.81 1.503-.101.04-.198.077-.291.113-.366.144-.614.24-.823.39-.331.243-.571.548-.596.875-.01.132.024.291.096.487.224.565.663 1.223 1.226 1.862.614.698 1.362 1.374 2.095 2.035.044.04.092.084.141.128.124.11.242.215.352.314.121.105.24.211.36.323.484.43.718.753.718 1.06 0 .473-.466.659-1.315.659-.217 0-.461-.031-.728-.068-.209-.031-.436-.063-.688-.095-.078-.009-.157-.013-.236-.014-.214-.003-.444.032-.688.114-.401.132-.668.36-.834.567-.258.32-.374.673-.448.985-.088.365-.159.697-.258 1.027-.083.29-.194.596-.362.905-.516.944-1.452 1.416-2.786 1.416h-.033c-.786 0-1.572-.131-2.335-.254l-.059-.01c-.416-.065-.834-.132-1.247-.189-.36-.05-.697-.077-1.026-.077-.519 0-1.027.077-1.559.149-.462.063-.959.13-1.48.182-.989.096-1.998.149-3 .149-1.452 0-2.41-.473-2.927-1.416-.168-.309-.279-.615-.362-.905-.099-.33-.17-.662-.258-1.027-.074-.312-.19-.665-.448-.985-.166-.207-.433-.435-.834-.567-.244-.082-.474-.117-.688-.114-.079.001-.158.005-.236.014-.252.032-.479.064-.688.095-.267.037-.511.068-.728.068-.849 0-1.315-.186-1.315-.659 0-.307.234-.63.718-1.06.12-.112.239-.218.36-.323.11-.099.228-.204.352-.314.049-.044.097-.088.141-.128.733-.661 1.481-1.337 2.095-2.035.563-.639 1.002-1.297 1.226-1.862.072-.196.106-.355.096-.487-.025-.327-.265-.632-.596-.875-.209-.15-.457-.246-.823-.39-.093-.036-.19-.073-.291-.113-.867-.323-1.81-.778-1.81-1.503 0-.283.154-.511.454-.725.472-.338 1.157-.561 1.851-.787.382-.125.762-.255 1.142-.42.08-.034.13-.12.13-.215-.007-.151-.017-.316-.029-.496l-.003-.06c-.104-1.628-.23-3.654.299-4.847 1.583-3.545 4.94-3.821 5.93-3.821z"/>
+                </svg>
+            </a>
+            <a href="mailto:dhruv12306@outlook.com" class="contact-icon" title="Email">
                 <svg viewBox="0 0 24 24" width="28" height="28">
                     <path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                 </svg>
             </a>
-            <a href="tel:+919876543210" class="contact-icon" title="Phone">
+            <a href="https://wa.me/916358842592" target="_blank" class="contact-icon" title="WhatsApp">
                 <svg viewBox="0 0 24 24" width="28" height="28">
-                    <path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
-                </svg>
-            </a>
-            <a href="https://instagram.com/dhruvshah" target="_blank" class="contact-icon" title="Instagram">
-                <svg viewBox="0 0 24 24" width="28" height="28">
-                    <path fill="currentColor" d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+                    <path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                 </svg>
             </a>
         </div>
-        <button class="contact-copy">COPY CONTACT CARD</button>
+        <div class="contact-copy">
+            <button class="copy-btn" id="copyPhone">COPY PHONE NUMBER</button>
+            <button class="copy-btn" id="copyEmail">COPY EMAIL</button>
+        </div>
     </div>
 
     <div class="counter" id="counter">01/08</div>
@@ -539,7 +737,8 @@
         const contactBtn=document.getElementById('contactBtn');
         const contactPanel=document.getElementById('contactPanel');
         const contactClose=document.getElementById('contactClose');
-        const contactCopy=document.querySelector('.contact-copy');
+        const copyPhone=document.getElementById('copyPhone');
+        const copyEmail=document.getElementById('copyEmail');
 
         contactBtn.addEventListener('click',()=>{
             contactPanel.classList.add('show');
@@ -549,18 +748,26 @@
             contactPanel.classList.remove('show');
         });
 
-        contactCopy.addEventListener('click',()=>{
-            const vcard=`BEGIN:VCARD
-VERSION:3.0
-FN:Dhruv Shah
-TEL:+919876543210
-EMAIL:dhruv@example.com
-URL:https://linkedin.com/in/dhruvshah
-END:VCARD`;
-            navigator.clipboard.writeText(vcard).then(()=>{
-                contactCopy.textContent='COPIED!';
+        copyPhone.addEventListener('click',()=>{
+            navigator.clipboard.writeText('+916358842592').then(()=>{
+                const orig=copyPhone.textContent;
+                copyPhone.textContent='COPIED ✓';
+                copyPhone.classList.add('copied');
                 setTimeout(()=>{
-                    contactCopy.textContent='COPY CONTACT CARD';
+                    copyPhone.textContent=orig;
+                    copyPhone.classList.remove('copied');
+                },2000);
+            });
+        });
+
+        copyEmail.addEventListener('click',()=>{
+            navigator.clipboard.writeText('dhruv12306@outlook.com').then(()=>{
+                const orig=copyEmail.textContent;
+                copyEmail.textContent='COPIED ✓';
+                copyEmail.classList.add('copied');
+                setTimeout(()=>{
+                    copyEmail.textContent=orig;
+                    copyEmail.classList.remove('copied');
                 },2000);
             });
         });
